@@ -1,0 +1,67 @@
+ScreenManager:
+    Screen:
+        name: "auth"
+        AuthView:
+            id: auth_view
+            orientation: "vertical"
+            existing_link: existing_link
+            BoxLayout:
+                TextInput:
+                    id: first_name
+                    hint_text: "First Name"
+                    multiline: False
+                TextInput:
+                    id: last_name
+                    hint_text: "Last Name"
+                    multiline: False
+            TextInput:
+                id: email
+                hint_text: "(Google) Email"
+                multiline: False
+            TextInput:
+                id: private_key
+                hint_text: "Private Key"
+            TextInput:
+                id: existing_link
+                hint_text: "Existing Sheet Link (Optional)"
+                multiline: False
+            BoxLayout:
+                ToggleButton:
+                    id: teacher_button
+                    text: "Teacher"
+                    group: "account_type"
+                    state: "down"
+                ToggleButton:
+                    id: admin_button
+                    text: "Admin"
+                    group: "account_type"
+                    disabled: True  # ToDo: remove once teacher view exists
+            Button:
+                text: "Authenticate"
+                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
+                on_press: auth_view.check_authenticate()
+
+    Screen:
+        name: "teacher"
+        TeacherView:
+            id: teacher_view
+            orientation: "vertical"
+
+            student_list: student_list
+
+            Button:
+                id: add_student
+                text: "Add Student"
+                size_hint_y: None
+                height: 50
+
+            ScrollView:
+                do_scroll_x: False
+#                size_hint_x: None
+                Accordion:
+                    id: student_list
+                    orientation: "vertical"
+                    size_hint_y: None
+                    on_children: self.height = len(self.children) * 50 + 210
+                    minimum_height: 100
+#                    height: 500
