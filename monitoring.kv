@@ -8,21 +8,26 @@ ScreenManager:
             BoxLayout:
                 TextInput:
                     id: first_name
+                    write_tab: False
                     hint_text: "First Name"
                     multiline: False
                 TextInput:
                     id: last_name
+                    write_tab: False
                     hint_text: "Last Name"
                     multiline: False
             TextInput:
                 id: email
+                write_tab: False
                 hint_text: "(Google) Email"
                 multiline: False
             TextInput:
                 id: private_key
+                write_tab: False
                 hint_text: "Private Key"
             TextInput:
                 id: existing_link
+                write_tab: False
                 hint_text: "Existing Sheet Link (Optional)"
                 multiline: False
             BoxLayout:
@@ -45,23 +50,186 @@ ScreenManager:
         name: "teacher"
         TeacherView:
             id: teacher_view
-            orientation: "vertical"
 
             student_list: student_list
 
-            Button:
-                id: add_student
-                text: "Add Student"
-                size_hint_y: None
-                height: 50
+            TabbedPanel:
+                do_default_tab: False
 
-            ScrollView:
-                do_scroll_x: False
-#                size_hint_x: None
-                Accordion:
-                    id: student_list
-                    orientation: "vertical"
-                    size_hint_y: None
-                    on_children: self.height = len(self.children) * 50 + 210
-                    minimum_height: 100
-#                    height: 500
+                TabbedPanelItem:
+                    text: "Today"
+
+                TabbedPanelItem:
+                    text: "Students"
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        Button:
+                            id: add_student
+                            text: "Add Student"
+                            size_hint_y: None
+                            height: 50
+                            on_press: root.current = "add_child"
+
+                        ScrollView:
+                            do_scroll_x: False
+                            Accordion:
+                                id: student_list
+                                orientation: "vertical"
+                                size_hint_y: None
+                                on_children: self.height = len(self.children) * 50 + 210
+                                minimum_height: 100
+
+                TabbedPanelItem:
+                    text: "Overview"
+
+                TabbedPanelItem:
+                    text: "Fees"
+
+    Screen:
+        name: "add_child"
+        NewChildView:
+            id: new_child_view
+            orientation: "vertical"
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Name"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: 'Date of joining'
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Group"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Father's name"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Mother's name"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Address"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Phone number (Mother)"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Phone number (Father)"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Date of birth (YY-MM-DD)"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Aadhar Card number"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Official Class"
+                multiline: False
+
+            BoxLayout:
+                size_hint_y: None
+                height: 30
+
+                Label:
+                    text: "Goes to government school: "
+
+                ToggleButton:
+                    text: "Yes"
+                    group: "government_school"
+                    state: "down"
+                    size_hint_x: None
+                    width: 50
+
+                ToggleButton:
+                    text: "No"
+                    group: "government_school"
+                    size_hint_x: None
+                    width: 50
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Mother' main occupation"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Father' main occupation"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Baseline M"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Baseline E"
+                multiline: False
+
+            TextInput:
+                size_hint_y: None
+                height: 30
+                write_tab: False
+                hint_text: "Baseline Hindi"
+                multiline: False
+
+            TextInput:
+                write_tab: False
+                hint_text: "Comment"
+                multiline: False
+
+            Button:
+                size_hint_y: None
+                height: 30
+                text: "Add"
