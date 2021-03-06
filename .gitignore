@@ -41,3 +41,4 @@ venv.bak/
 
 # Project
 teacher_credentials.json
+session.json

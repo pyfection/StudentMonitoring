@@ -4,32 +4,29 @@ ScreenManager:
         AuthView:
             id: auth_view
             orientation: "vertical"
-            existing_link: existing_link
             BoxLayout:
                 TextInput:
                     id: first_name
                     write_tab: False
                     hint_text: "First Name"
+                    text: self.parent.parent.session.get('first_name')
                     multiline: False
                 TextInput:
                     id: last_name
                     write_tab: False
                     hint_text: "Last Name"
+                    text: self.parent.parent.session.get('last_name')
                     multiline: False
             TextInput:
                 id: email
                 write_tab: False
-                hint_text: "(Google) Email"
+                hint_text: "Email"
+                text: self.parent.session.get('email')
                 multiline: False
             TextInput:
                 id: private_key
                 write_tab: False
                 hint_text: "Private Key"
-            TextInput:
-                id: existing_link
-                write_tab: False
-                hint_text: "Existing Sheet Link (Optional)"
-                multiline: False
             BoxLayout:
                 ToggleButton:
                     id: teacher_button
@@ -43,7 +40,7 @@ ScreenManager:
                     disabled: True  # ToDo: remove once teacher view exists
             Button:
                 text: "Authenticate"
-                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
+#                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
                 on_press: auth_view.check_authenticate()
 
     Screen:
@@ -51,6 +48,7 @@ ScreenManager:
         TeacherView:
             id: teacher_view
 
+            attendance_list: attendance_list
             student_list: student_list
 
             TabbedPanel:
@@ -58,6 +56,15 @@ ScreenManager:
 
                 TabbedPanelItem:
                     text: "Today"
+
+                    ScrollView:
+                        do_scroll_x: False
+                        BoxLayout:
+                            id: attendance_list
+                            orientation: "vertical"
+                            size_hint_y: None
+                            on_children: self.height = len(self.children) * 30
+                            minimum_height: 100
 
                 TabbedPanelItem:
                     text: "Students"
@@ -77,7 +84,7 @@ ScreenManager:
                                 id: student_list
                                 orientation: "vertical"
                                 size_hint_y: None
-                                on_children: self.height = len(self.children) * 50 + 210
+                                on_children: self.height = len(self.children) * 70 + 220
                                 minimum_height: 100
 
                 TabbedPanelItem:
@@ -92,7 +99,28 @@ ScreenManager:
             id: new_child_view
             orientation: "vertical"
 
+            name: name
+            date_of_joining: date_of_joining
+            group: group
+            name_father: name_father
+            name_mother: name_mother
+            address: address
+            phone_mother: phone_mother
+            phone_father: phone_father
+            dob: dob
+            aadhar: aadhar
+            official_class: official_class
+            goes_government_school_yes: goes_government_school_yes
+            goes_government_school_no: goes_government_school_no
+            occupation_mother: occupation_mother
+            occupation_father: occupation_father
+            baseline_math: baseline_math
+            baseline_english: baseline_english
+            baseline_hindi: baseline_hindi
+            comment: comment
+
             TextInput:
+                id: name
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -100,13 +128,15 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: date_of_joining
                 size_hint_y: None
                 height: 30
                 write_tab: False
-                hint_text: 'Date of joining'
+                hint_text: 'Date of joining (YYYY-MM-DD)'
                 multiline: False
 
             TextInput:
+                id: group
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -114,6 +144,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: name_father
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -121,6 +152,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: name_mother
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -128,6 +160,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: address
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -135,6 +168,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: phone_mother
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -142,6 +176,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: phone_father
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -149,6 +184,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: dob
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -156,6 +192,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: aadhar
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -163,6 +200,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: official_class
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -177,6 +215,7 @@ ScreenManager:
                     text: "Goes to government school: "
 
                 ToggleButton:
+                    id: goes_government_school_yes
                     text: "Yes"
                     group: "government_school"
                     state: "down"
@@ -184,12 +223,14 @@ ScreenManager:
                     width: 50
 
                 ToggleButton:
+                    id: goes_government_school_no
                     text: "No"
                     group: "government_school"
                     size_hint_x: None
                     width: 50
 
             TextInput:
+                id: occupation_mother
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -197,6 +238,7 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: occupation_father
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -204,20 +246,23 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: baseline_math
                 size_hint_y: None
                 height: 30
                 write_tab: False
-                hint_text: "Baseline M"
+                hint_text: "Baseline Math"
                 multiline: False
 
             TextInput:
+                id: baseline_english
                 size_hint_y: None
                 height: 30
                 write_tab: False
-                hint_text: "Baseline E"
+                hint_text: "Baseline English"
                 multiline: False
 
             TextInput:
+                id: baseline_hindi
                 size_hint_y: None
                 height: 30
                 write_tab: False
@@ -225,11 +270,12 @@ ScreenManager:
                 multiline: False
 
             TextInput:
+                id: comment
                 write_tab: False
                 hint_text: "Comment"
-                multiline: False
 
             Button:
                 size_hint_y: None
                 height: 30
                 text: "Add"
+                on_press: self.parent.submit()
