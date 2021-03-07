@@ -3,18 +3,18 @@ import re
 from datetime import datetime
 import json
 
-from kivy.network.urlrequest import UrlRequest
 from kivy.app import App
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.accordion import AccordionItem
+from kivy.config import Config
+from kivy.core.window import Window
 import gspread_mock as gspread
 from google.oauth2.service_account import Credentials
-from kivy.config import Config
-Config.set('graphics', 'width', '480')
-Config.set('graphics', 'height', '800')
+Window.size = (480, 800)
 
 
 class AuthView(BoxLayout):
@@ -66,9 +66,6 @@ class TeacherView(BoxLayout):
             "Goes to goverment school",
             "Mother' main occupation",
             "Father' main occupation",
-            "baseline Math",
-            "Baseline English",
-            "Baseline Hindi",
             "Comment"
         )
 
@@ -102,10 +99,12 @@ class TeacherView(BoxLayout):
 
     def load_students(self):
         ws = self.sh.worksheet("Students")
-        records = ws.get(f'A2:R{ws.row_count-1}')
+        students = ws.get(f'A2:R{ws.row_count-1}')
+        ws = self.sh.worksheet("Fees")
+        fees = ws.get(f'A2:R{ws.row_count-1}')
 
         # Adding students to attendance sheet
-        for student in records:
+        for student in students:
             bx = BoxLayout()
             name = Label(text=student[1])
             attended = ToggleButton(text='attended', group=f'attended_{student[0]}')
@@ -119,7 +118,7 @@ class TeacherView(BoxLayout):
             self.attendance_list.add_widget(bx)
 
         # Adding students to students list
-        for student in records:
+        for student in students:
             std = AccordionItem(title=student[1])
             bx = BoxLayout(orientation='vertical')
             std.add_widget(bx)
@@ -132,6 +131,34 @@ class TeacherView(BoxLayout):
                 bx.add_widget(key_value)
 
             self.student_list.add_widget(std)
+
+        # Adding fees
+        today = datetime.today()
+        for student in students:
+            bx = BoxLayout()
+            name = Label(text=student[1])
+            date = TextInput(hint_text="Date (YYYY-MM-DD)")
+            amount = TextInput(hint_text="Amount")
+            receipt = TextInput(hint_text="Receipt")
+            books = TextInput(hint_text="Books Payment")
+            for fee in fees:
+                if fee[0] != student[0]:
+                    continue
+                dt = datetime.fromisoformat(fee[1])
+                if dt.year != today.year or dt.month != today.month:
+                    continue
+                date.text = fee[1]
+                amount.text = fee[2]
+                receipt.text = fee[3]
+                books.text = fee[4]
+                break
+            bx.add_widget(name)
+            bx.add_widget(date)
+            bx.add_widget(amount)
+            bx.add_widget(receipt)
+            bx.add_widget(books)
+
+            self.fees_list.add_widget(bx)
 
     def add_child(self, data):
         ws = self.sh.worksheet("Students")

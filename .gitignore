@@ -42,3 +42,4 @@ venv.bak/
 # Project
 teacher_credentials.json
 session.json
+mock_files/

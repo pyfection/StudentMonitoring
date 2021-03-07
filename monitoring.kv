@@ -50,6 +50,7 @@ ScreenManager:
 
             attendance_list: attendance_list
             student_list: student_list
+            fees_list: fees_list
 
             TabbedPanel:
                 do_default_tab: False
@@ -93,6 +94,15 @@ ScreenManager:
                 TabbedPanelItem:
                     text: "Fees"
 
+                    ScrollView:
+                        do_scroll_x: False
+                        BoxLayout:
+                            id: fees_list
+                            orientation: "vertical"
+                            size_hint_y: None
+                            on_children: self.height = len(self.children) * 30
+                            minimum_height: 100
+
     Screen:
         name: "add_child"
         NewChildView:
@@ -114,9 +124,6 @@ ScreenManager:
             goes_government_school_no: goes_government_school_no
             occupation_mother: occupation_mother
             occupation_father: occupation_father
-            baseline_math: baseline_math
-            baseline_english: baseline_english
-            baseline_hindi: baseline_hindi
             comment: comment
 
             TextInput:
