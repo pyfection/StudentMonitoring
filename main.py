@@ -1,20 +1,54 @@
 from pprint import pprint
 import re
 from datetime import datetime
+import calendar
 import json
 
 from kivy.app import App
 from kivy.factory import Factory
+from kivy.graphics import Rectangle, Color
+from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.accordion import AccordionItem
+from kivy.uix.tabbedpanel import TabbedPanelItem
+from kivy.uix.scatterlayout import ScatterLayout
 from kivy.config import Config
 from kivy.core.window import Window
 import gspread_mock as gspread
 from google.oauth2.service_account import Credentials
 Window.size = (480, 800)
+
+
+class StudentOverview(TabbedPanelItem):
+    def __init__(self, students, year, month, **kwargs):
+        super(StudentOverview, self).__init__(text=f'{year} {month}', **kwargs)
+        self.students = students
+
+        days = calendar.monthrange(year, month)[1]
+        for i in range(1, 31+1):
+            if i <= days:
+                dt = datetime(year=year, month=month, day=i)
+                day = f'{i}\n{dt.strftime("%a")}'
+            else:
+                day = ''
+            self.grid.add_widget(Label(text=day, size_hint_x=None, width=40))
+
+        for id_, student in students.items():
+            self.grid.add_widget(Label(text=id_))
+            self.grid.add_widget(Label(text=student['name']))
+            self.grid.add_widget(Label(text=student.get('math', '')))
+            self.grid.add_widget(Label(text=student.get('english', '')))
+            self.grid.add_widget(Label(text=student.get('hindi', '')))
+            self.grid.add_widget(Label(text=student.get('date', '')))
+            self.grid.add_widget(Label(text=student.get('amount', '')))
+            self.grid.add_widget(Label(text=student.get('receipt', '')))
+            self.grid.add_widget(Label(text=student.get('books', '')))
+            for i in range(1, 31+1):
+                self.grid.add_widget(Label(text=student.get(str(i), '')))
 
 
 class AuthView(BoxLayout):
@@ -78,30 +112,13 @@ class TeacherView(BoxLayout):
         print('open url')
         self.load_students()
 
-    def load_student_master(self):
-        ws = self.sh.worksheet("Student master")
-        print('get worksheet')
-        records = ws.get_all_records(head=2)
-        for student in records:
-            student = {key.strip(): value for key, value in student.items()}
-            std = AccordionItem(title=student["Name of student"])
-            bx = BoxLayout(orientation='vertical')
-            std.add_widget(bx)
-            for header in self.headers:
-                key_value = BoxLayout(size_hint_y=None, height=20)
-                key = Label(text=header)
-                value = Label(text=str(student[header]))
-                key_value.add_widget(key)
-                key_value.add_widget(value)
-                bx.add_widget(key_value)
-
-            self.student_list.add_widget(std)
-
     def load_students(self):
         ws = self.sh.worksheet("Students")
         students = ws.get(f'A2:R{ws.row_count-1}')
         ws = self.sh.worksheet("Fees")
         fees = ws.get(f'A2:R{ws.row_count-1}')
+        ws = self.sh.worksheet("Grades")
+        grades = ws.get(f'A2:R{ws.row_count-1}')
 
         # Adding students to attendance sheet
         for student in students:
@@ -160,9 +177,58 @@ class TeacherView(BoxLayout):
 
             self.fees_list.add_widget(bx)
 
+        # Adding overview
+        students = {s[0]: s[1:] for s in students}
+        info = {}
+        for fee in fees:
+            dt = datetime.fromisoformat(fee[1])
+            date = (dt.year, dt.month)
+            st = students[fee[0]]
+            fee_data = {
+                'id': fee[0], 'name': st[0], 'date': fee[1], 'amount': fee[2], 'receipt': fee[2], 'books': fee[1]
+            }
+            try:
+                students_ = info[date]
+            except KeyError:
+                info[date] = {fee[0]: fee_data}
+            else:
+                try:
+                    student = students_[fee[0]]
+                except KeyError:
+                    students_[fee[0]] = fee_data
+                else:
+                    student.update(fee_data)
+
+        for grade in grades:
+            dt = datetime.fromisoformat(grade[1])
+            date = (dt.year, dt.month)
+            st = students[grade[0]]
+            grade_data = {'id': grade[0], 'name': st[0], 'math': grade[2], 'english': grade[3], 'hindi': grade[4]}
+            try:
+                students_ = info[date]
+            except KeyError:
+                info[date] = {grade[0]: grade_data}
+            else:
+                try:
+                    student = students_[grade[0]]
+                except KeyError:
+                    students_[grade[0]] = grade_data
+                else:
+                    student.update(grade_data)
+
+        for date, students_ in sorted(info.items()):
+            tab = StudentOverview(students_, date[0], date[1])
+            self.student_overview.add_widget(tab)
+
     def add_child(self, data):
         ws = self.sh.worksheet("Students")
-        ws.append_row(data)
+        i = ws.row_count
+        ws.append_row([str(i)] + data)
+        self.attendance_list.clear_widgets()
+        self.student_list.clear_widgets()
+        self.fees_list.clear_widgets()
+        self.student_overview.clear_widgets()
+        self.load_students()
 
 
 class NewChildView(BoxLayout):
@@ -204,12 +270,9 @@ class NewChildView(BoxLayout):
             self.dob.text,
             self.aadhar.text,
             self.official_class.text,
-            self.goes_government_school_yes.state == "down",
+            str(int(self.goes_government_school_yes.state == "down")),
             self.occupation_mother.text,
             self.occupation_father.text,
-            self.baseline_math.text,
-            self.baseline_english.text,
-            self.baseline_hindi.text,
             self.comment.text,
         ]
         app = App.get_running_app()
