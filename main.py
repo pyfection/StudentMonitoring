@@ -149,6 +149,34 @@ class TeacherView(BoxLayout):
 
             self.student_list.add_widget(std)
 
+        # Adding grades
+        today = datetime.today()
+        for student in students:
+            bx = BoxLayout()
+            name = Label(text=student[1])
+            date = TextInput(hint_text="Date (YYYY-MM-DD)")
+            math = TextInput(hint_text="Math")
+            english = TextInput(hint_text="English")
+            hindi = TextInput(hint_text="Hindi")
+            for grade in grades:
+                if grade[0] != student[0]:
+                    continue
+                dt = datetime.fromisoformat(grade[1])
+                if dt.year != today.year or dt.month != today.month:
+                    continue
+                date.text = grade[1]
+                math.text = grade[2]
+                english.text = grade[3]
+                hindi.text = grade[4]
+                break
+            bx.add_widget(name)
+            bx.add_widget(date)
+            bx.add_widget(math)
+            bx.add_widget(english)
+            bx.add_widget(hindi)
+
+            self.grades_list.add_widget(bx)
+
         # Adding fees
         today = datetime.today()
         for student in students:

@@ -51,6 +51,7 @@ ScreenManager:
             attendance_list: attendance_list
             student_list: student_list
             student_overview: student_overview
+            grades_list: grades_list
             fees_list: fees_list
 
             TabbedPanel:
@@ -88,6 +89,18 @@ ScreenManager:
                                 size_hint_y: None
                                 on_children: self.height = len(self.children) * 70 + 220
                                 minimum_height: 100
+
+                TabbedPanelItem:
+                    text: "Grades"
+
+                    ScrollView:
+                        do_scroll_x: False
+                        BoxLayout:
+                            id: grades_list
+                            orientation: "vertical"
+                            size_hint_y: None
+                            on_children: self.height = len(self.children) * 30
+                            minimum_height: 100
 
                 TabbedPanelItem:
                     text: "Fees"
