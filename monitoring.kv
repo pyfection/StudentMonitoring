@@ -48,6 +48,7 @@ ScreenManager:
         TeacherView:
             id: teacher_view
 
+            attendance_list_yesterday: attendance_list_yesterday
             attendance_list: attendance_list
             student_list: student_list
             student_overview: student_overview
@@ -62,12 +63,32 @@ ScreenManager:
 
                     ScrollView:
                         do_scroll_x: False
+
                         BoxLayout:
-                            id: attendance_list
                             orientation: "vertical"
-                            size_hint_y: None
-                            on_children: self.height = len(self.children) * 30
-                            minimum_height: 100
+
+                            BoxLayout:
+                                # Only shows the students for which attendance was not entered yesterday
+                                id: attendance_list_yesterday
+                                orientation: "vertical"
+                                size_hint_y: None
+                                on_children: self.height = len(self.children) * 30
+                                minimum_height: 10
+
+                            Label:
+                                text: '[s]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[/s] YESTERDAY [s]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[/s]'
+                                markup: True
+                                size_hint_y: None
+                                height: 20
+
+                            BoxLayout:
+                                id: attendance_list
+                                orientation: "vertical"
+                                size_hint_y: None
+                                on_children: self.height = len(self.children) * 30
+                                minimum_height: 100
+
+                            Widget:  # Just to have something expand at the bottom
 
                 TabbedPanelItem:
                     text: "Students"

@@ -1,6 +1,6 @@
 from pprint import pprint
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
 import json
 
@@ -115,24 +115,47 @@ class TeacherView(BoxLayout):
     def load_students(self):
         ws = self.sh.worksheet("Students")
         students = ws.get(f'A2:R{ws.row_count-1}')
+        ws = self.sh.worksheet("Attendance")
+        attendance = ws.get(f'A2:R{ws.row_count-1}')
         ws = self.sh.worksheet("Fees")
         fees = ws.get(f'A2:R{ws.row_count-1}')
         ws = self.sh.worksheet("Grades")
         grades = ws.get(f'A2:R{ws.row_count-1}')
 
         # Adding students to attendance sheet
+        today = datetime.today()
+        today_ = today.strftime('%Y-%m-%d')
+        yesterday = (today - timedelta(days=1)).strftime('%Y-%m-%d')
         for student in students:
+            try:
+                state = next(att[2] for att in attendance if att[0] == student[0] and att[1] == today_)
+            except StopIteration:
+                state = ''
             bx = BoxLayout()
             name = Label(text=student[1])
-            attended = ToggleButton(text='attended', group=f'attended_{student[0]}')
-            missed = ToggleButton(text='missed', group=f'attended_{student[0]}')
-            late = ToggleButton(text='late', group=f'attended_{student[0]}')
+            present = ToggleButton(text='present', group=f'attended_{student[0]}', state='down' if state == 'present' else 'normal')
+            absent = ToggleButton(text='absent', group=f'attended_{student[0]}', state='down' if state == 'absent' else 'normal')
+            late = ToggleButton(text='late', group=f'attended_{student[0]}', state='down' if state == 'late' else 'normal')
             bx.add_widget(name)
-            bx.add_widget(attended)
-            bx.add_widget(missed)
+            bx.add_widget(present)
+            bx.add_widget(absent)
             bx.add_widget(late)
 
             self.attendance_list.add_widget(bx)
+
+            has_yesterday = any(att[2] for att in attendance if att[0] == student[0] and att[1] == yesterday)
+            if not has_yesterday:
+                bx = BoxLayout()
+                name = Label(text=student[1])
+                present = ToggleButton(text='present', group=f'attended_{student[0]}')
+                absent = ToggleButton(text='absent', group=f'attended_{student[0]}')
+                late = ToggleButton(text='late', group=f'attended_{student[0]}')
+                bx.add_widget(name)
+                bx.add_widget(present)
+                bx.add_widget(absent)
+                bx.add_widget(late)
+
+                self.attendance_list_yesterday.add_widget(bx)
 
         # Adding students to students list
         for student in students:
