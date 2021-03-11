@@ -81,6 +81,8 @@ class TeacherView(BoxLayout):
         self.load_students()
 
     def load_students(self):
+        ws = self.sh.worksheet("Holidays")
+        holidays = ws.get(f'A2:R{ws.row_count-1}')
         ws = self.sh.worksheet("Students")
         students = ws.get(f'A2:R{ws.row_count-1}')
         ws = self.sh.worksheet("Attendance")
@@ -235,8 +237,25 @@ class TeacherView(BoxLayout):
                 else:
                     student.update(grade_data)
 
+        for att in attendance:
+            dt = datetime.fromisoformat(att[1])
+            date = (dt.year, dt.month)
+            st = students[att[0]]
+            att_data = {'id': att[0], 'name': st[0], str(dt.day): att[2]}
+            try:
+                students_ = info[date]
+            except KeyError:
+                info[date] = {att[0]: att_data}
+            else:
+                try:
+                    student = students_[att[0]]
+                except KeyError:
+                    students_[att[0]] = att_data
+                else:
+                    student.update(att_data)
+
         for date, students_ in sorted(info.items()):
-            tab = StudentOverview(students_, date[0], date[1])
+            tab = StudentOverview(students_, date[0], date[1], holidays)
             self.student_overview.add_widget(tab)
 
     def add_child(self, data):

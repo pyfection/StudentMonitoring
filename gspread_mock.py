@@ -24,10 +24,12 @@ class Sheet:
             ws.records = students
         elif name == 'Attendance':
             ws.records = attendance
-        if name == 'Grades':
+        elif name == 'Grades':
             ws.records = grades
-        if name == 'Fees':
+        elif name == 'Fees':
             ws.records = fees
+        elif name == 'Holidays':
+            ws.records = holidays
         return ws
 
 
@@ -51,3 +53,6 @@ with open('mock_files/grades.csv') as f:
 
 with open('mock_files/fees.csv') as f:
     fees = [line.split(';') for line in f.read().split('\n')]
+
+with open('mock_files/holidays.csv') as f:
+    holidays = [line.split(';') for line in f.read().split('\n')]
