@@ -1,54 +1,22 @@
 from pprint import pprint
 import re
 from datetime import datetime, timedelta
-import calendar
 import json
 
 from kivy.app import App
 from kivy.factory import Factory
-from kivy.graphics import Rectangle, Color
-from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.accordion import AccordionItem
-from kivy.uix.tabbedpanel import TabbedPanelItem
-from kivy.uix.scatterlayout import ScatterLayout
-from kivy.config import Config
 from kivy.core.window import Window
 import gspread_mock as gspread
 from google.oauth2.service_account import Credentials
+
+from widgets.student_overview import StudentOverview
+
 Window.size = (480, 800)
-
-
-class StudentOverview(TabbedPanelItem):
-    def __init__(self, students, year, month, **kwargs):
-        super(StudentOverview, self).__init__(text=f'{year} {month}', **kwargs)
-        self.students = students
-
-        days = calendar.monthrange(year, month)[1]
-        for i in range(1, 31+1):
-            if i <= days:
-                dt = datetime(year=year, month=month, day=i)
-                day = f'{i}\n{dt.strftime("%a")}'
-            else:
-                day = ''
-            self.grid.add_widget(Label(text=day, size_hint_x=None, width=40))
-
-        for id_, student in students.items():
-            self.grid.add_widget(Label(text=id_))
-            self.grid.add_widget(Label(text=student['name']))
-            self.grid.add_widget(Label(text=student.get('math', '')))
-            self.grid.add_widget(Label(text=student.get('english', '')))
-            self.grid.add_widget(Label(text=student.get('hindi', '')))
-            self.grid.add_widget(Label(text=student.get('date', '')))
-            self.grid.add_widget(Label(text=student.get('amount', '')))
-            self.grid.add_widget(Label(text=student.get('receipt', '')))
-            self.grid.add_widget(Label(text=student.get('books', '')))
-            for i in range(1, 31+1):
-                self.grid.add_widget(Label(text=student.get(str(i), '')))
 
 
 class AuthView(BoxLayout):
