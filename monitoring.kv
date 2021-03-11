@@ -1,3 +1,4 @@
+#:import datetime datetime.datetime
 ScreenManager:
     Screen:
         name: "auth"
@@ -59,7 +60,8 @@ ScreenManager:
                 do_default_tab: False
 
                 TabbedPanelItem:
-                    text: "Today"
+                    text: f"Today\n[size=10]{datetime.today().strftime('%d-%m-%Y')}[/size]"
+                    markup: True
 
                     ScrollView:
                         do_scroll_x: False
