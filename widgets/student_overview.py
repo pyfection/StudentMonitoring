@@ -45,8 +45,8 @@ class StudentOverview(TabbedPanelItem):
             self.grid.add_widget(Label(text=student.get('math', '')))
             self.grid.add_widget(Label(text=student.get('english', '')))
             self.grid.add_widget(Label(text=student.get('hindi', '')))
-            self.grid.add_widget(Label(text=student.get('date', '')))
             self.grid.add_widget(Label(text=student.get('amount', '')))
+            self.grid.add_widget(Label(text=student.get('date', '')))
             self.grid.add_widget(Label(text=student.get('receipt', '')))
             self.grid.add_widget(Label(text=student.get('books', '')))
             for i in range(1, 31+1):
