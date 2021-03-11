@@ -166,131 +166,130 @@ ScreenManager:
             occupation_father: occupation_father
             comment: comment
 
-            TextInput:
-                id: name
+            GridLayout:
+                cols: 2
+                row_default_height: 40
                 size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Name"
-                multiline: False
+                height: self.minimum_height  #len(self.children) * .5 * 30
 
-            TextInput:
-                id: date_of_joining
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: 'Date of joining (YYYY-MM-DD)'
-                multiline: False
+                Label:
+                    text: "Name"
 
-            TextInput:
-                id: group
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Group"
-                multiline: False
+                TextInput:
+                    id: name
+                    write_tab: False
+                    multiline: False
 
-            TextInput:
-                id: name_father
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Father's name"
-                multiline: False
+                Label:
+                    text: 'Date of joining (YYYY-MM-DD)'
 
-            TextInput:
-                id: name_mother
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Mother's name"
-                multiline: False
+                TextInput:
+                    id: date_of_joining
+                    write_tab: False
+                    multiline: False
 
-            TextInput:
-                id: address
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Address"
-                multiline: False
+                Label:
+                    text: "Group"
 
-            TextInput:
-                id: phone_mother
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Phone number (Mother)"
-                multiline: False
+                TextInput:
+                    id: group
+                    write_tab: False
+                    multiline: False
 
-            TextInput:
-                id: phone_father
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Phone number (Father)"
-                multiline: False
+                Label:
+                    text: "Father's name"
 
-            TextInput:
-                id: dob
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Date of birth (YY-MM-DD)"
-                multiline: False
+                TextInput:
+                    id: name_father
+                    write_tab: False
+                    multiline: False
 
-            TextInput:
-                id: aadhar
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Aadhar Card number"
-                multiline: False
+                Label:
+                    text: "Mother's name"
 
-            TextInput:
-                id: official_class
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Official Class"
-                multiline: False
+                TextInput:
+                    id: name_mother
+                    write_tab: False
+                    multiline: False
 
-            BoxLayout:
-                size_hint_y: None
-                height: 30
+                Label:
+                    text: "Address"
+
+                TextInput:
+                    id: address
+                    write_tab: False
+                    multiline: False
+
+                Label:
+                    text: "Phone number (Mother)"
+
+                TextInput:
+                    id: phone_mother
+                    write_tab: False
+                    multiline: False
+
+                Label:
+                    text: "Phone number (Father)"
+
+                TextInput:
+                    id: phone_father
+                    write_tab: False
+                    multiline: False
+
+                Label:
+                    text: "Date of birth (YY-MM-DD)"
+
+                TextInput:
+                    id: dob
+                    write_tab: False
+                    multiline: False
+
+                Label:
+                    text: "Aadhar Card number"
+
+                TextInput:
+                    id: aadhar
+                    write_tab: False
+                    multiline: False
+
+                Label:
+                    text: "Official Class"
+
+                TextInput:
+                    id: official_class
+                    write_tab: False
+                    multiline: False
 
                 Label:
                     text: "Goes to government school: "
 
-                ToggleButton:
-                    id: goes_government_school_yes
-                    text: "Yes"
-                    group: "government_school"
-                    state: "down"
-                    size_hint_x: None
-                    width: 50
+                BoxLayout:
+                    ToggleButton:
+                        id: goes_government_school_yes
+                        text: "Yes"
+                        group: "government_school"
+                        state: "down"
 
-                ToggleButton:
-                    id: goes_government_school_no
-                    text: "No"
-                    group: "government_school"
-                    size_hint_x: None
-                    width: 50
+                    ToggleButton:
+                        id: goes_government_school_no
+                        text: "No"
+                        group: "government_school"
 
-            TextInput:
-                id: occupation_mother
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Mother' main occupation"
-                multiline: False
+                Label:
+                    text: "Mother' main occupation"
 
-            TextInput:
-                id: occupation_father
-                size_hint_y: None
-                height: 30
-                write_tab: False
-                hint_text: "Father' main occupation"
-                multiline: False
+                TextInput:
+                    id: occupation_mother
+                    write_tab: False
+                    multiline: False
+
+                Label:
+                    text: "Father' main occupation"
+
+                TextInput:
+                    id: occupation_father
+                    write_tab: False
+                    multiline: False
 
             TextInput:
                 id: comment
@@ -299,6 +298,6 @@ ScreenManager:
 
             Button:
                 size_hint_y: None
-                height: 30
+                height: 40
                 text: "Add"
                 on_press: self.parent.submit()
