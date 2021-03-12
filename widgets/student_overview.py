@@ -26,6 +26,7 @@ class StudentOverview(TabbedPanelItem):
         )
 
         days = calendar.monthrange(year, month)[1]
+        school_days = 0
         for i in range(1, 31+1):
             if i <= days:
                 dt = datetime(year=year, month=month, day=i)
@@ -37,11 +38,15 @@ class StudentOverview(TabbedPanelItem):
             bg_color = None
             if weekday == 6 or i in holidays:
                 bg_color = self.HOLIDAY_COLOR
+            else:
+                school_days += 1
             self.grid.add_widget(AdvancedLabel(text=day, size_hint_x=None, width=40, bg_color=bg_color))
 
         for id_, student in students.items():
+            days_present = len([a for a in student.values() if a in ("present", "late")])
             self.grid.add_widget(Label(text=id_))
             self.grid.add_widget(Label(text=student['name']))
+            self.grid.add_widget(Label(text=f'{days_present}/{school_days}/{days}'))
             self.grid.add_widget(Label(text=student.get('math', '')))
             self.grid.add_widget(Label(text=student.get('english', '')))
             self.grid.add_widget(Label(text=student.get('hindi', '')))

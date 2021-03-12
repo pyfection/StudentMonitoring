@@ -7,7 +7,7 @@
         ScatterLayout:
             do_rotation:False
             size_hint_x: None
-            width: 2050
+            width: 2200
             canvas.before:
                 Color:
                     rgb: 0.26, 0.26, 0.26
@@ -18,13 +18,17 @@
                 id: grid
                 row_force_default: True
                 row_default_height: 30
-                cols: 40
+                cols: 41
                 Label:
                     text: "ID"
                     size_hint_x: None
                     width: 30
                 Label:
                     text: "Name"
+                    size_hint_x: None
+                    width: 150
+                Label:
+                    text: "Attendance Days"
                     size_hint_x: None
                     width: 150
                 Label:
