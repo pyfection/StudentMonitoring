@@ -3,7 +3,7 @@ import re
 from datetime import datetime, timedelta
 import json
 
-from kivy.app import App
+from kivymd.app import MDApp as App
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import ToggleButton
@@ -14,6 +14,7 @@ from kivy.core.window import Window
 import gspread_mock as gspread
 from google.oauth2.service_account import Credentials
 
+import settings
 from widgets.student_overview import StudentOverview
 
 Window.size = (480, 800)
@@ -91,11 +92,15 @@ class TeacherView(BoxLayout):
         fees = ws.get(f'A2:R{ws.row_count-1}')
         ws = self.sh.worksheet("Grades")
         grades = ws.get(f'A2:R{ws.row_count-1}')
+        ws = self.sh.worksheet("RangePlans")
+        range_plans = ws.get(f'A2:R{ws.row_count-1}')
+        ws = self.sh.worksheet("MonthPlans")
+        month_plans = ws.get(f'A2:R{ws.row_count-1}')
 
         # Adding students to attendance sheet
         today = datetime.today()
         today_ = today.strftime('%Y-%m-%d')
-        yesterday = (today - timedelta(days=1)).strftime('%Y-%m-%d')
+        yesterday = (today - timedelta(days=1)).strftime(settings.date_format)
         for student in students:
             try:
                 state = next(att[2] for att in attendance if att[0] == student[0] and att[1] == today_)
@@ -197,6 +202,26 @@ class TeacherView(BoxLayout):
             bx.add_widget(books)
 
             self.fees_list.add_widget(bx)
+
+        # Adding plan
+        self.plan_list.subjects = ["Math", "English", "Hindi", "Arts"]
+        self.plan_list.data = {
+            'months': {
+                '2021-03': {
+                    "Math": "Test data math",
+                    "Arts": "Test data arts",
+                },
+                '2021-04': {
+                    "English": "Test data english",
+                    "Arts": "Test data arts",
+                },
+            },
+            'ranges': {
+                ('2021-03-01', '2021-03-05'): {
+                    "Math": "Exact math subject"
+                }
+            }
+        }
 
         # Adding overview
         students = {s[0]: s[1:] for s in students}
@@ -319,11 +344,15 @@ class NewChildView(BoxLayout):
 
 
 class MonitoringApp(App):
-    pass
+    def build(self):
+        self.theme_cls.primary_palette = "Gray"
+        self.theme_cls.accent_palette = "Brown"
+        self.theme_cls.theme_style = "Dark"
 
 
 Factory.register('TeacherView', module='main')
 Factory.register('AuthView', module='main')
+Factory.register('PlanView', module='widgets.plan_view')
 
 
 if __name__ == '__main__':

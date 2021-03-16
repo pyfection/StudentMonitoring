@@ -1,1 +1,1 @@
-teacher_credentials_part = ''
+date_format = '%d-%m-%Y'

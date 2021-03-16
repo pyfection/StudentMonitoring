@@ -55,6 +55,7 @@ ScreenManager:
             student_overview: student_overview
             grades_list: grades_list
             fees_list: fees_list
+            plan_list: plan_list
 
             TabbedPanel:
                 do_default_tab: False
@@ -136,6 +137,11 @@ ScreenManager:
                             size_hint_y: None
                             on_children: self.height = len(self.children) * 30
                             minimum_height: 100
+
+                TabbedPanelItem:
+                    text: "Plan"
+                    PlanView:
+                        id: plan_list
 
                 TabbedPanelItem:
                     text: "Overview"

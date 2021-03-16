@@ -1,0 +1,71 @@
+#:import calendar calendar
+#:import date datetime.date
+#:import settings settings
+
+<PlanView>:
+    rows: rows
+    orientation: "vertical"
+
+    BoxLayout:
+        id: subjects
+        size_hint_y: None
+        height: 30
+
+        Widget:
+            size_hint_x: None
+            width: 100
+
+        Button:
+            size_hint_x: None
+            width: 30
+            text: "+"
+            on_press: root.subjects.append('')
+
+    ScrollView:
+        BoxLayout:
+            id: rows
+            orientation: "vertical"
+            size_hint_y: None
+            on_children:
+                self.height = sum(c.height for c in self.children)
+                self.width = sum(c.width for c in self.children)
+            minimum_width: 100
+            minimum_height: 100
+
+    Button:
+        size_hint_y: None
+        height: 30
+        text: "Save"
+        on_press: root.update_data()
+
+
+<MonthRow>:
+    add: add
+    size_hint_y: None
+    height: 60
+
+    Label:
+        size_hint_x: None
+        width: 80
+        text: calendar.month_name[int(root.month.split('-')[1])]
+
+    Button:
+        id: add
+        size_hint_x: None
+        width: 20
+        text: "+"
+
+
+<RangeRow>:
+    size_hint_y: None
+    height: 60
+
+    Label:
+        size_hint_x: None
+        width: 100
+        text: '\n'.join((date.fromisoformat(root.start).strftime(settings.date_format), date.fromisoformat(root.end).strftime(settings.date_format)))
+
+
+<SubjectDesc>:
+    size_hint_x: None
+    width: 70
