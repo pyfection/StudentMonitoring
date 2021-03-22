@@ -11,12 +11,12 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.accordion import AccordionItem
 from kivy.core.window import Window
+from kivymd.uix.list import MDList
 import gspread_mock as gspread
 from google.oauth2.service_account import Credentials
 
 import settings
 from widgets.student_overview import StudentOverview
-
 
 
 class AuthView(BoxLayout):
@@ -296,7 +296,7 @@ class TeacherView(BoxLayout):
         self.load_students()
 
 
-class NewChildView(BoxLayout):
+class NewChildView(MDList):
     # @staticmethod
     # def correct_date_format(inst):
     #     for i in (4, 7, 10):
