@@ -68,6 +68,7 @@ class TeacherView(BoxLayout):
             "Goes to goverment school",
             "Mother' main occupation",
             "Father' main occupation",
+            "Status",
             "Comment"
         )
 
@@ -101,6 +102,8 @@ class TeacherView(BoxLayout):
         today_ = today.strftime('%Y-%m-%d')
         yesterday = (today - timedelta(days=1)).strftime(settings.date_format)
         for student in students:
+            if student[15] == 'inactive':
+                continue
             try:
                 state = next(att[2] for att in attendance if att[0] == student[0] and att[1] == today_)
             except StopIteration:
@@ -147,11 +150,13 @@ class TeacherView(BoxLayout):
 
             self.student_list.add_widget(std)
         min_space = len(self.student_list.children) * self.student_list.min_space
-        self.student_list.height = min_space + 1200
+        self.student_list.height = min_space + 80 * len(self.headers)
 
         # Adding grades
         today = datetime.today()
         for student in students:
+            if student[15] == 'inactive':
+                continue
             bx = BoxLayout()
             name = Label(text=student[1])
             date = TextInput(hint_text="Date (YYYY-MM-DD)")
@@ -180,6 +185,8 @@ class TeacherView(BoxLayout):
         # Adding fees
         today = datetime.today()
         for student in students:
+            if student[15] == 'inactive':
+                continue
             bx = BoxLayout()
             name = Label(text=student[1])
             date = TextInput(hint_text="Date (YYYY-MM-DD)")
@@ -226,7 +233,7 @@ class TeacherView(BoxLayout):
         }
 
         # Adding overview
-        students = {s[0]: s[1:] for s in students}
+        students = {s[0]: s[1:] for s in students if student[15] == 'active'}
         info = {}
         for fee in fees:
             dt = datetime.fromisoformat(fee[1])
