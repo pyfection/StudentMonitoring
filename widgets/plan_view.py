@@ -91,7 +91,8 @@ class PlanView(BoxLayout):
         start = date_range[0].isoformat()
         end = date_range[-1].isoformat()
         row = RangeRow(start=start, end=end)
-        row.subjects = self.subjects
+        for subject in self.subjects:
+            row.add_subject(subject)
         row.data = self.data['ranges']
         for i, row_ in enumerate(reversed(self.rows.children)):
             try:
@@ -99,7 +100,7 @@ class PlanView(BoxLayout):
             except AttributeError:
                 smaller = start < row_.start
             if smaller:
-                self.rows.add_widget(row, index=i)
+                self.rows.add_widget(row, index=-i)
                 break
         else:
             self.rows.add_widget(row)
