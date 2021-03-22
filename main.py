@@ -17,7 +17,6 @@ from google.oauth2.service_account import Credentials
 import settings
 from widgets.student_overview import StudentOverview
 
-Window.size = (480, 800)
 
 
 class AuthView(BoxLayout):
@@ -135,17 +134,20 @@ class TeacherView(BoxLayout):
         # Adding students to students list
         for student in students:
             std = AccordionItem(title=student[1])
-            bx = BoxLayout(orientation='vertical')
+            bx = BoxLayout(orientation='vertical', size_hint_y=None)
             std.add_widget(bx)
             for i, header in enumerate(self.headers, 1):
-                key_value = BoxLayout(size_hint_y=None, height=20)
+                key_value = BoxLayout(size_hint_y=None, height=80)
                 key = Label(text=header)
                 value = Label(text=str(student[i]))
                 key_value.add_widget(key)
                 key_value.add_widget(value)
                 bx.add_widget(key_value)
+            bx.height = sum(c.height for c in bx.children)
 
             self.student_list.add_widget(std)
+        min_space = len(self.student_list.children) * self.student_list.min_space
+        self.student_list.height = min_space + 1200
 
         # Adding grades
         today = datetime.today()

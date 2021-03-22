@@ -90,6 +90,8 @@ class PlanView(BoxLayout):
             row.subjects = self.subjects
             row.data = mdata
             self.rows.add_widget(row)
+        self.rows.width = sum(c.width for c in self.rows.children)
+        self.rows.height = sum(c.height for c in self.rows.children)
 
     def show_date_picker(self, month):
         year, month = map(int, month.split('-'))
@@ -99,13 +101,16 @@ class PlanView(BoxLayout):
 
     def add_subject(self, subject):
         if subject in PROTECTED_SUBJECTS:
-            wg = Label(size_hint_x=None, width=70, text=subject)
+            wg = Label(size_hint_x=None, width=400, text=subject)
         else:
-            wg = TextInput(size_hint_x=None, width=70, text=subject)
+            wg = TextInput(size_hint_x=None, width=400, text=subject)
 
         self.ids.subjects.add_widget(wg, index=1)
         for row in self.rows.children:
             row.subjects.append(subject)
+        self.ids.subjects.width = sum(c.width for c in self.ids.subjects.children)
+        self.rows.width = sum(c.width for c in self.rows.children)
+        self.rows.height = sum(c.height for c in self.rows.children)
 
     def add_date_range(self, instance, value, date_range):
         start = date_range[0].isoformat()
@@ -123,6 +128,8 @@ class PlanView(BoxLayout):
                 break
         else:
             self.rows.add_widget(row)
+        self.rows.width = sum(c.width for c in self.rows.children)
+        self.rows.height = sum(c.height for c in self.rows.children)
 
     def update_data(self):
         data = {'months': {}, 'ranges': {}}

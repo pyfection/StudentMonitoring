@@ -40,7 +40,7 @@ class StudentOverview(TabbedPanelItem):
                 bg_color = self.HOLIDAY_COLOR
             else:
                 school_days += 1
-            self.grid.add_widget(AdvancedLabel(text=day, size_hint_x=None, width=40, bg_color=bg_color))
+            self.grid.add_widget(AdvancedLabel(text=day, size_hint_x=None, width=80, bg_color=bg_color))
 
         for id_, student in students.items():
             days_present = len([a for a in student.values() if a in ("present", "late")])

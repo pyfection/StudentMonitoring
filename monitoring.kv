@@ -61,7 +61,8 @@ ScreenManager:
                 do_default_tab: False
 
                 TabbedPanelItem:
-                    text: f"Today\n[size=10]{datetime.today().strftime('%d-%m-%Y')}[/size]"
+                    id: panel_item
+                    text: f"Today\n[size=13sp]{datetime.today().strftime('%d-%m-%Y')}[/size]"
                     markup: True
 
                     ScrollView:
@@ -69,27 +70,31 @@ ScreenManager:
 
                         BoxLayout:
                             orientation: "vertical"
+                            size_hint_y: None
+                            height: sum(c.height for c in self.children)
 
                             BoxLayout:
                                 # Only shows the students for which attendance was not entered yesterday
                                 id: attendance_list_yesterday
                                 orientation: "vertical"
                                 size_hint_y: None
-                                on_children: self.height = len(self.children) * 30
+                                height: len(self.children) * 80
+                                on_children: self.parent.height = sum(c.height for c in self.parent.children)
                                 minimum_height: 10
 
                             Label:
                                 text: '[s]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[/s] YESTERDAY [s]^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[/s]'
                                 markup: True
                                 size_hint_y: None
-                                height: 20
+                                height: 80
 
                             BoxLayout:
                                 id: attendance_list
                                 orientation: "vertical"
                                 size_hint_y: None
-                                on_children: self.height = len(self.children) * 30
-                                minimum_height: 100
+                                height: len(self.children) * 80
+                                on_children: self.parent.height = sum(c.height for c in self.parent.children)
+                                minimum_height: 10
 
                             Widget:  # Just to have something expand at the bottom
 
@@ -98,44 +103,47 @@ ScreenManager:
 
                     BoxLayout:
                         orientation: "vertical"
-                        Button:
+
+                        MDFillRoundFlatIconButton:
                             id: add_student
+                            icon: "plus"
                             text: "Add Student"
+                            size_hint_x: 1
                             size_hint_y: None
-                            height: 50
+                            height: 80
                             on_press: root.current = "add_child"
 
                         ScrollView:
-                            do_scroll_x: False
                             Accordion:
                                 id: student_list
                                 orientation: "vertical"
                                 size_hint_y: None
-                                on_children: self.height = len(self.children) * 70 + 220
                                 minimum_height: 100
 
                 TabbedPanelItem:
                     text: "Grades"
 
                     ScrollView:
-                        do_scroll_x: False
                         BoxLayout:
                             id: grades_list
                             orientation: "vertical"
                             size_hint_y: None
-                            on_children: self.height = len(self.children) * 30
+                            size_hint_x: None
+                            width: 1500
+                            on_children: self.height = len(self.children) * 80
                             minimum_height: 100
 
                 TabbedPanelItem:
                     text: "Fees"
 
                     ScrollView:
-                        do_scroll_x: False
                         BoxLayout:
                             id: fees_list
                             orientation: "vertical"
                             size_hint_y: None
-                            on_children: self.height = len(self.children) * 30
+                            size_hint_x: None
+                            width: 1500
+                            on_children: self.height = len(self.children) * 80
                             minimum_height: 100
 
                 TabbedPanelItem:
@@ -174,7 +182,7 @@ ScreenManager:
 
             GridLayout:
                 cols: 2
-                row_default_height: 40
+                row_default_height: 80
                 size_hint_y: None
                 height: self.minimum_height  #len(self.children) * .5 * 30
 
@@ -302,7 +310,8 @@ ScreenManager:
                 write_tab: False
                 hint_text: "Comment"
 
-            Button:
+            MDFillRoundFlatIconButton:
+                icon: "plus"
                 size_hint_y: None
                 height: 40
                 text: "Add"

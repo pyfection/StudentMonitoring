@@ -6,35 +6,38 @@
     rows: rows
     orientation: "vertical"
 
-    BoxLayout:
-        id: subjects
-        size_hint_y: None
-        height: 30
-
-        Widget:
-            size_hint_x: None
-            width: 100
-
-        Button:
-            size_hint_x: None
-            width: 30
-            text: "+"
-            on_press: root.subjects.append('')
-
     ScrollView:
         BoxLayout:
-            id: rows
             orientation: "vertical"
-            size_hint_y: None
-            on_children:
-                self.height = sum(c.height for c in self.children)
-                self.width = sum(c.width for c in self.children)
-            minimum_width: 100
-            minimum_height: 100
+            size_hint: None, None
+            width: sum(c.width for c in self.children)
+            height: sum(c.height for c in self.children)
+
+            BoxLayout:
+                id: subjects
+                size_hint: None, None
+                height: 80
+
+                Widget:
+                    size_hint_x: None
+                    width: 250
+
+                Button:
+                    size_hint_x: None
+                    width: 80
+                    text: "+"
+                    on_press: root.subjects.append('')
+
+            BoxLayout:
+                id: rows
+                orientation: "vertical"
+                size_hint: None, None
+    #                self.height = sum(c.height for c in self.children)
+    #                self.width = sum(c.width for c in self.children)
 
     Button:
         size_hint_y: None
-        height: 30
+        height: 80
         text: "Save"
         on_press: root.update_data()
 
@@ -42,30 +45,30 @@
 <MonthRow>:
     add: add
     size_hint_y: None
-    height: 60
+    height: 400
 
     Label:
         size_hint_x: None
-        width: 80
+        width: 200
         text: calendar.month_name[int(root.month.split('-')[1])]
 
     Button:
         id: add
         size_hint_x: None
-        width: 20
+        width: 50
         text: "+"
 
 
 <RangeRow>:
     size_hint_y: None
-    height: 60
+    height: 400
 
     Label:
         size_hint_x: None
-        width: 100
+        width: 250
         text: '\n'.join((date.fromisoformat(root.start).strftime(settings.date_format), date.fromisoformat(root.end).strftime(settings.date_format)))
 
 
 <SubjectDesc>:
     size_hint_x: None
-    width: 70
+    width: 400
