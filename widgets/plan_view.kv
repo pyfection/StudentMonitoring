@@ -17,7 +17,7 @@
                 id: subjects
                 size_hint: None, None
                 height: 80
-                on_children: self.parent.width = sum(c.width for c in self.children)
+                on_children: self.parent.width = sum(c.width for c in self.children) + rows.height + add_month.height
 
                 Widget:
                     size_hint_x: None
@@ -32,7 +32,14 @@
             BoxLayout:
                 id: rows
                 orientation: "vertical"
-                on_children: self.parent.height = sum(c.height for c in self.children) + subjects.height
+                on_children: self.parent.height = sum(c.height for c in self.children) + subjects.height + add_month.height
+
+            Button:
+                id: add_month
+                size_hint_y: None
+                height: 80
+                text: "Add Month"
+                on_press: root.new_month()
 
     Button:
         size_hint_y: None
@@ -49,7 +56,7 @@
     Label:
         size_hint_x: None
         width: 200
-        text: calendar.month_name[int(root.month.split('-')[1])]
+        text: f"{calendar.month_name[int(root.month.split('-')[1])]}\n{root.month.split('-')[0]}"
 
     Button:
         id: add

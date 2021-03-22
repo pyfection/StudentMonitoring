@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 
 from kivy.lang.builder import Builder
 from kivy.properties import ListProperty, DictProperty, StringProperty
@@ -67,12 +68,7 @@ class PlanView(BoxLayout):
 
     def on_data(self, inst, data):
         for month, mdata in data['months'].items():
-            row = MonthRow(month=month)
-            row.add.bind(on_press=lambda inst, month=month: self.show_date_picker(month))
-            for subject in self.subjects:
-                row.add_subject(subject)
-            row.data = mdata
-            self.rows.add_widget(row)
+            self.add_month(month, mdata)
 
     def show_date_picker(self, month):
         year, month = map(int, month.split('-'))
@@ -107,6 +103,23 @@ class PlanView(BoxLayout):
                 break
         else:
             self.rows.add_widget(row)
+
+    def add_month(self, month, mdata=None):
+        row = MonthRow(month=month)
+        row.add.bind(on_press=lambda inst, month=month: self.show_date_picker(month))
+        for subject in self.subjects:
+            row.add_subject(subject)
+        if mdata:
+            row.data = mdata
+        self.rows.add_widget(row)
+
+    def new_month(self):
+        latest = max(self.data['months'].keys())
+        year, month = map(int, latest.split('-'))
+        latest_month = date(year, month+1, 1)
+        month_str = latest_month.strftime('%Y-%m')
+        self.add_month(month_str)
+        self.data['months'][month_str] = {}
 
     def update_data(self):
         data = {'months': {}, 'ranges': {}}
