@@ -298,8 +298,10 @@ class TeacherView(BoxLayout):
         ws.append_row([str(i)] + data)
         self.attendance_list.clear_widgets()
         self.student_list.clear_widgets()
+        self.grades_list.clear_widgets()
         self.fees_list.clear_widgets()
         self.student_overview.clear_widgets()
+        self.student_overview.clear_tabs()
         self.load_students()
 
 
@@ -345,6 +347,7 @@ class NewChildView(MDList):
             str(int(self.goes_government_school_yes.state == "down")),
             self.occupation_mother.text,
             self.occupation_father.text,
+            'active',
             self.comment.text,
         ]
         app = App.get_running_app()
