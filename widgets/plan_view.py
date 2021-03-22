@@ -20,17 +20,8 @@ class SubjectDesc(TextInput):
 class MonthRow(BoxLayout):
     initial = True
     month = StringProperty()
-    subjects = ListProperty()
     data = DictProperty()
     descs = {}
-
-    def on_subjects(self, inst, subjects):
-        if self.initial:
-            for subject in subjects:
-                self.add_subject(subject)
-            self.initial = False
-        else:
-            self.add_subject(subjects[-1])
 
     def on_data(self, inst, data):
         for subject, desc in self.descs.items():
@@ -47,17 +38,8 @@ class RangeRow(BoxLayout):
     initial = True
     start = StringProperty()
     end = StringProperty()
-    subjects = ListProperty()
     data = DictProperty()
     descs = {}
-
-    def on_subjects(self, inst, subjects):
-        if self.initial:
-            for subject in subjects:
-                self.add_subject(subject)
-            self.initial = False
-        else:
-            self.add_subject(subjects[-1])
 
     def on_data(self, inst, data):
         for subject, desc in self.descs.items():
@@ -87,11 +69,10 @@ class PlanView(BoxLayout):
         for month, mdata in data['months'].items():
             row = MonthRow(month=month)
             row.add.bind(on_press=lambda inst, month=month: self.show_date_picker(month))
-            row.subjects = self.subjects
+            for subject in self.subjects:
+                row.add_subject(subject)
             row.data = mdata
             self.rows.add_widget(row)
-        self.rows.width = sum(c.width for c in self.rows.children)
-        self.rows.height = sum(c.height for c in self.rows.children)
 
     def show_date_picker(self, month):
         year, month = map(int, month.split('-'))
@@ -107,10 +88,8 @@ class PlanView(BoxLayout):
 
         self.ids.subjects.add_widget(wg, index=1)
         for row in self.rows.children:
-            row.subjects.append(subject)
+            row.add_subject(subject)
         self.ids.subjects.width = sum(c.width for c in self.ids.subjects.children)
-        self.rows.width = sum(c.width for c in self.rows.children)
-        self.rows.height = sum(c.height for c in self.rows.children)
 
     def add_date_range(self, instance, value, date_range):
         start = date_range[0].isoformat()
@@ -128,8 +107,6 @@ class PlanView(BoxLayout):
                 break
         else:
             self.rows.add_widget(row)
-        self.rows.width = sum(c.width for c in self.rows.children)
-        self.rows.height = sum(c.height for c in self.rows.children)
 
     def update_data(self):
         data = {'months': {}, 'ranges': {}}

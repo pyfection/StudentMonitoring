@@ -3,20 +3,21 @@
 #:import settings settings
 
 <PlanView>:
+    layout: layout
     rows: rows
     orientation: "vertical"
 
     ScrollView:
         BoxLayout:
+            id: layout
             orientation: "vertical"
             size_hint: None, None
-            width: sum(c.width for c in self.children)
-            height: sum(c.height for c in self.children)
 
             BoxLayout:
                 id: subjects
                 size_hint: None, None
                 height: 80
+                on_children: self.parent.width = sum(c.width for c in self.children)
 
                 Widget:
                     size_hint_x: None
@@ -31,9 +32,7 @@
             BoxLayout:
                 id: rows
                 orientation: "vertical"
-                size_hint: None, None
-    #                self.height = sum(c.height for c in self.children)
-    #                self.width = sum(c.width for c in self.children)
+                on_children: self.parent.height = sum(c.height for c in self.children) + subjects.height
 
     Button:
         size_hint_y: None
