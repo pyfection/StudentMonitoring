@@ -1,4 +1,5 @@
-#:import datetime datetime.datetime
+#:import date datetime.date
+#:import timedelta datetime.timedelta
 ScreenManager:
     Screen:
         name: "auth"
@@ -62,7 +63,7 @@ ScreenManager:
 
                 TabbedPanelItem:
                     id: panel_item
-                    text: f"Today\n[size=13sp]{datetime.today().strftime('%d-%m-%Y')}[/size]"
+                    text: f"Today\n[size=13sp]{date.today().strftime('%d-%m-%Y')}[/size]"
                     markup: True
 
                     ScrollView:
@@ -121,7 +122,8 @@ ScreenManager:
                                 minimum_height: 100
 
                 TabbedPanelItem:
-                    text: "Grades"
+                    text: f"Grades\n[size=13sp]{(date.today().replace(day=1) - timedelta(days=1)).strftime('%b-%Y')}[/size]"
+                    markup: True
 
                     ScrollView:
                         BoxLayout:
@@ -134,7 +136,8 @@ ScreenManager:
                             minimum_height: 100
 
                 TabbedPanelItem:
-                    text: "Fees"
+                    text: f"Fees\n[size=13sp]{(date.today().replace(day=1) - timedelta(days=1)).strftime('%b-%Y')}[/size]"
+                    markup: True
 
                     ScrollView:
                         BoxLayout:
