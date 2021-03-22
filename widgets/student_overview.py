@@ -11,7 +11,8 @@ Builder.load_file('widgets/student_overview.kv')
 
 
 class StudentOverview(TabbedPanelItem):
-    HOLIDAY_COLOR = (.07, .5, .17, 1)
+    HOLIDAY_COLOR = (.2, .4, .7, 1)
+    SUNDAY_COLOR = (.3, .5, .7, 1)
     PRESENT_COLOR = (0, .7, 0, 1)
     ABSENT_COLOR = (1, .7, 0, 1)
     LATE_COLOR = (.7, .7, 0, 1)
@@ -36,7 +37,9 @@ class StudentOverview(TabbedPanelItem):
                 weekday = 0
                 day = ''
             bg_color = None
-            if weekday == 6 or i in holidays:
+            if weekday == 6:
+                bg_color = self.SUNDAY_COLOR
+            elif i in holidays:
                 bg_color = self.HOLIDAY_COLOR
             else:
                 school_days += 1
@@ -61,7 +64,9 @@ class StudentOverview(TabbedPanelItem):
                     weekday = 0
                 att = student.get(str(i), '')
                 bg_color = None
-                if weekday == 6 or i in holidays:
+                if weekday == 6:
+                    bg_color = self.SUNDAY_COLOR
+                elif i in holidays:
                     bg_color = self.HOLIDAY_COLOR
                 elif att == 'present':
                     att = 'P'

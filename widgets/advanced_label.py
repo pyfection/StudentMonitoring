@@ -4,6 +4,7 @@ from kivy.lang.builder import Builder
 
 Builder.load_string('''
 <AdvancedLabel>:
+    size_hint: 1, 1
     bg_color: 1, 1, 1, 0
     canvas.before:
         Color:
