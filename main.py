@@ -42,17 +42,6 @@ class AuthView(BoxLayout):
         except FileNotFoundError:
             self.session = {}
 
-    def check_authenticate(self):
-        print('authorize')
-        if not api.auth(self.private_key.text, self.email.text, self.first_name.text, self.last_name.text):
-            print("Couldn't authenticate")
-            return
-        # ToDo: add check if actually authorized
-        # ToDo: check if part of secret key is same part of teacher secret key in config
-        app = App.get_running_app()
-        app.root.current = 'teacher'
-        app.root.ids.teacher_view.load_students()
-
 
 class TeacherView(BoxLayout):
     def __init__(self, **kwargs):
@@ -350,6 +339,22 @@ class MonitoringApp(App):
         self.theme_cls.primary_palette = "Gray"
         self.theme_cls.accent_palette = "Brown"
         self.theme_cls.theme_style = "Dark"
+
+        with open('session.json') as f:
+            session = json.load(f)
+        if self.check_authenticate(
+                session.get('key'), session.get('email'), session.get('first_name'), session.get('last_name')):
+            self.root.current = 'teacher'
+            self.root.ids.teacher_view.load_students()
+        else:
+            self.root.current = 'auth'
+
+    def check_authenticate(self, key, email, first_name, last_name):
+        print('authorize')
+        if not api.auth(key, email, first_name, last_name):
+            print("Couldn't authenticate")
+            return False
+        return True
 
 
 Factory.register('TeacherView', module='main')

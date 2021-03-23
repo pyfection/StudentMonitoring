@@ -2,6 +2,11 @@
 #:import timedelta datetime.timedelta
 ScreenManager:
     Screen:
+        name: "splash"
+        Image:
+            source: "Greenworld_Logo_Coloured.png"
+
+    Screen:
         name: "auth"
         AuthView:
             private_key: private_key
@@ -48,7 +53,7 @@ ScreenManager:
             Button:
                 text: "Authenticate"
 #                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
-                on_press: auth_view.check_authenticate()
+                on_press: app.check_authenticate(self.private_key.text, self.email.text, self.first_name.text, self.last_name.text)
 
     Screen:
         name: "teacher"
