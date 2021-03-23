@@ -12,11 +12,27 @@ from kivy.uix.label import Label
 from kivy.uix.accordion import AccordionItem
 from kivy.core.window import Window
 from kivymd.uix.list import MDList
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.textfield import MDTextField
+from kivymd.uix.button import MDRoundFlatIconButton
+from kivymd.uix.picker import MDDatePicker
+
 import gspread_mock as gspread
 from google.oauth2.service_account import Credentials
 
 import settings
 from widgets.student_overview import StudentOverview
+
+
+class DatePickerButton(MDRoundFlatIconButton):
+    def show_date_picker(self):
+        date_dialog = MDDatePicker()
+        date_dialog.bind(on_save=self.on_save)
+        date_dialog.open()
+
+    def on_save(self, instance, value, date_range):
+        self.text = value.strftime('%b-%Y')
 
 
 class AuthView(BoxLayout):
@@ -157,20 +173,20 @@ class TeacherView(BoxLayout):
         for student in students:
             if student[15] == 'inactive':
                 continue
-            bx = BoxLayout()
-            name = Label(text=student[1])
-            date = TextInput(hint_text="Date (YYYY-MM-DD)")
-            gtype = TextInput(hint_text="Type")
-            math = TextInput(hint_text="Math")
-            english = TextInput(hint_text="English")
-            hindi = TextInput(hint_text="Hindi")
+            bx = MDBoxLayout(padding=(10, 10, 10, 10), spacing=10)
+            name = MDLabel(text=student[1])
+            date = DatePickerButton()
+            gtype = MDTextField(hint_text="Type")
+            math = MDTextField(hint_text="Math")
+            english = MDTextField(hint_text="English")
+            hindi = MDTextField(hint_text="Hindi")
             for grade in grades:
                 if grade[0] != student[0]:
                     continue
-                dt = datetime.fromisoformat(grade[1])
+                dt = datetime(*map(int, grade[1].split('-')), 1)
                 if dt.year != today.year or dt.month != today.month:
                     continue
-                date.text = grade[1]
+                date.text = dt.strftime('%b-%Y')
                 gtype.text = grade[2]
                 math.text = grade[3]
                 english.text = grade[4]
@@ -258,7 +274,7 @@ class TeacherView(BoxLayout):
                     student.update(fee_data)
 
         for grade in grades:
-            dt = datetime.fromisoformat(grade[1])
+            dt = datetime(*map(int, grade[1].split('-')), 1)
             date = (dt.year, dt.month)
             st = students[grade[0]]
             grade_data = {'id': grade[0], 'name': st[0], 'math': grade[2], 'english': grade[3], 'hindi': grade[4]}
