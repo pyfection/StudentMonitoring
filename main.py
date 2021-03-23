@@ -18,9 +18,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRoundFlatIconButton
 from kivymd.uix.picker import MDDatePicker
 
-import gspread_mock as gspread
-from google.oauth2.service_account import Credentials
-
+from api import api
 import settings
 from widgets.student_overview import StudentOverview
 
@@ -45,90 +43,65 @@ class AuthView(BoxLayout):
             self.session = {}
 
     def check_authenticate(self):
-        scopes = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
-        credentials = Credentials.from_service_account_file(
-            'teacher_credentials.json',
-            scopes=scopes
-        )
-        gc = gspread.authorize(credentials)
         print('authorize')
+        if not api.auth(self.private_key.text, self.email.text, self.first_name.text, self.last_name.text):
+            print("Couldn't authenticate")
+            return
         # ToDo: add check if actually authorized
         # ToDo: check if part of secret key is same part of teacher secret key in config
         app = App.get_running_app()
         app.root.current = 'teacher'
-        app.root.ids.teacher_view.gc = gc
-        app.root.ids.teacher_view.load_sheet('link to center sheet')
+        app.root.ids.teacher_view.load_students()
 
 
 class TeacherView(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # self.student_list.bind(minimum_height=self.student_list.setter('height'))
-        self.sh = None
         self.student_master = {}
-        self.headers = (
-            "Name of student",
-            'Date of joining',
-            "gr #",
-            "Father's name",
-            "Mother's name",
-            "Address",
-            "Phone number (Mother)",
-            "Phone number (Father)",
-            "Date of birth",
-            "Aadhar Card number",
-            "Official Class",
-            "Goes to goverment school",
-            "Mother' main occupation",
-            "Father' main occupation",
-            "Status",
-            "Comment"
-        )
-
-    def new_sheet(self):
-        sh = self.gc.create()
-        # print(sh.sheet1.get('A1'))
-
-    def load_sheet(self, link):
-        self.sh = self.gc.open_by_url(link)
-        print('open url')
-        self.load_students()
+        self.headers = {
+            "student_name": "Name of student",
+            'joining_date': 'Date of joining',
+            "group": "gr #",
+            "name_father": "Father's name",
+            "name_mother": "Mother's name",
+            "address": "Address",
+            "phone_number_mother": "Phone number (Mother)",
+            "phone_number_father": "Phone number (Father)",
+            "dob": "Date of birth",
+            "aadhar_card_number": "Aadhar Card number",
+            "official_class": "Official Class",
+            "goes_goverment_school": "Goes to goverment school",
+            "occupation_mother": "Mother' main occupation",
+            "occupation_father": "Father' main occupation",
+            "status": "Status",
+            "teacher": "Teacher",
+            "comment": "Comment",
+        }
 
     def load_students(self):
-        ws = self.sh.worksheet("Holidays")
-        holidays = ws.get(f'A2:R{ws.row_count-1}')
-        ws = self.sh.worksheet("Students")
-        students = ws.get(f'A2:R{ws.row_count-1}')
-        ws = self.sh.worksheet("Attendance")
-        attendance = ws.get(f'A2:R{ws.row_count-1}')
-        ws = self.sh.worksheet("Fees")
-        fees = ws.get(f'A2:R{ws.row_count-1}')
-        ws = self.sh.worksheet("Grades")
-        grades = ws.get(f'A2:R{ws.row_count-1}')
-        ws = self.sh.worksheet("RangePlans")
-        range_plans = ws.get(f'A2:R{ws.row_count-1}')
-        ws = self.sh.worksheet("MonthPlans")
-        month_plans = ws.get(f'A2:R{ws.row_count-1}')
+        holidays = api.holidays()
+        students = api.students()
+        attendance = api.attendance()
+        fees = api.fees()
+        grades = api.grades()
 
         # Adding students to attendance sheet
         today = datetime.today()
         today_ = today.strftime('%Y-%m-%d')
         yesterday = (today - timedelta(days=1)).strftime(settings.date_format)
         for student in students:
-            if student[15] == 'inactive':
+            if student['status'] == 'inactive':
                 continue
             try:
-                state = next(att[2] for att in attendance if att[0] == student[0] and att[1] == today_)
+                state = next(att['status'] for att in attendance if att['student_id'] == student['id'] and att['date'] == today_)
             except StopIteration:
                 state = ''
             bx = BoxLayout()
-            name = Label(text=student[1])
-            present = ToggleButton(text='present', group=f'attended_{student[0]}', state='down' if state == 'present' else 'normal')
-            absent = ToggleButton(text='absent', group=f'attended_{student[0]}', state='down' if state == 'absent' else 'normal')
-            late = ToggleButton(text='late', group=f'attended_{student[0]}', state='down' if state == 'late' else 'normal')
+            name = Label(text=student['student_name'])
+            present = ToggleButton(text='present', group=f'attended_{student["id"]}', state='down' if state == 'present' else 'normal')
+            absent = ToggleButton(text='absent', group=f'attended_{student["id"]}', state='down' if state == 'absent' else 'normal')
+            late = ToggleButton(text='late', group=f'attended_{student["id"]}', state='down' if state == 'late' else 'normal')
             bx.add_widget(name)
             bx.add_widget(present)
             bx.add_widget(absent)
@@ -136,13 +109,13 @@ class TeacherView(BoxLayout):
 
             self.attendance_list.add_widget(bx)
 
-            has_yesterday = any(att[2] for att in attendance if att[0] == student[0] and att[1] == yesterday)
+            has_yesterday = any(att['status'] for att in attendance if att['student_id'] == student['id'] and att['date'] == yesterday)
             if not has_yesterday:
                 bx = BoxLayout()
-                name = Label(text=student[1])
-                present = ToggleButton(text='present', group=f'attended_{student[0]}')
-                absent = ToggleButton(text='absent', group=f'attended_{student[0]}')
-                late = ToggleButton(text='late', group=f'attended_{student[0]}')
+                name = Label(text=student['student_name'])
+                present = ToggleButton(text='present', group=f'attended_{student["id"]}')
+                absent = ToggleButton(text='absent', group=f'attended_{student["id"]}')
+                late = ToggleButton(text='late', group=f'attended_{student["id"]}')
                 bx.add_widget(name)
                 bx.add_widget(present)
                 bx.add_widget(absent)
@@ -152,13 +125,15 @@ class TeacherView(BoxLayout):
 
         # Adding students to students list
         for student in students:
-            std = AccordionItem(title=student[1])
+            std = AccordionItem(title=student['student_name'])
             bx = BoxLayout(orientation='vertical', size_hint_y=None)
             std.add_widget(bx)
-            for i, header in enumerate(self.headers, 1):
+            for key, value in student.items():
+                if key == 'id':
+                    continue
                 key_value = BoxLayout(size_hint_y=None, height=80)
-                key = Label(text=header)
-                value = Label(text=str(student[i]))
+                key = Label(text=self.headers[key])
+                value = Label(text=str(value))
                 key_value.add_widget(key)
                 key_value.add_widget(value)
                 bx.add_widget(key_value)
@@ -171,26 +146,26 @@ class TeacherView(BoxLayout):
         # Adding grades
         today = datetime.today()
         for student in students:
-            if student[15] == 'inactive':
+            if student['status'] == 'inactive':
                 continue
             bx = MDBoxLayout(padding=(10, 10, 10, 10), spacing=10)
-            name = MDLabel(text=student[1])
+            name = MDLabel(text=student['student_name'])
             date = DatePickerButton()
             gtype = MDTextField(hint_text="Type")
             math = MDTextField(hint_text="Math")
             english = MDTextField(hint_text="English")
             hindi = MDTextField(hint_text="Hindi")
             for grade in grades:
-                if grade[0] != student[0]:
+                if grade['student_id'] != student['id']:
                     continue
-                dt = datetime(*map(int, grade[1].split('-')), 1)
+                dt = datetime(*map(int, grade['date'].split('-')), 1)
                 if dt.year != today.year or dt.month != today.month:
                     continue
                 date.text = dt.strftime('%b-%Y')
-                gtype.text = grade[2]
-                math.text = grade[3]
-                english.text = grade[4]
-                hindi.text = grade[5]
+                gtype.text = grade['gtype']
+                math.text = grade['math']
+                english.text = grade['english']
+                hindi.text = grade['hindi']
                 break
             bx.add_widget(name)
             bx.add_widget(date)
@@ -204,24 +179,24 @@ class TeacherView(BoxLayout):
         # Adding fees
         today = datetime.today()
         for student in students:
-            if student[15] == 'inactive':
+            if student['status'] == 'inactive':
                 continue
             bx = BoxLayout()
-            name = Label(text=student[1])
+            name = Label(text=student['student_name'])
             date = TextInput(hint_text="Date (YYYY-MM-DD)")
             amount = TextInput(hint_text="Amount")
             receipt = TextInput(hint_text="Receipt")
             books = TextInput(hint_text="Books Payment")
             for fee in fees:
-                if fee[0] != student[0]:
+                if fee['student_id'] != student['id']:
                     continue
-                dt = datetime.fromisoformat(fee[1])
+                dt = datetime.fromisoformat(fee['date'])
                 if dt.year != today.year or dt.month != today.month:
                     continue
-                date.text = fee[1]
-                amount.text = fee[2]
-                receipt.text = fee[3]
-                books.text = fee[4]
+                date.text = fee['date']
+                amount.text = fee['amount']
+                receipt.text = fee['receipt']
+                books.text = fee['books']
                 break
             bx.add_widget(name)
             bx.add_widget(date)
@@ -252,58 +227,56 @@ class TeacherView(BoxLayout):
         }
 
         # Adding overview
-        students = {s[0]: s[1:] for s in students if student[15] == 'active'}
+        students = {s['id']: s for s in students if s['status'] == 'active'}
         info = {}
         for fee in fees:
-            dt = datetime.fromisoformat(fee[1])
+            dt = datetime.fromisoformat(fee['date'])
             date = (dt.year, dt.month)
-            st = students[fee[0]]
-            fee_data = {
-                'id': fee[0], 'name': st[0], 'date': fee[1], 'amount': fee[2], 'receipt': fee[2], 'books': fee[1]
-            }
+            st = students[fee['student_id']]
+            fee_data = {'id': fee['student_id'], 'name': st['student_name'], **fee}
             try:
                 students_ = info[date]
             except KeyError:
-                info[date] = {fee[0]: fee_data}
+                info[date] = {fee['student_id']: fee_data}
             else:
                 try:
-                    student = students_[fee[0]]
+                    student = students_[fee['student_id']]
                 except KeyError:
-                    students_[fee[0]] = fee_data
+                    students_[fee['student_id']] = fee_data
                 else:
                     student.update(fee_data)
 
         for grade in grades:
-            dt = datetime(*map(int, grade[1].split('-')), 1)
+            dt = datetime(*map(int, grade['date'].split('-')), 1)
             date = (dt.year, dt.month)
-            st = students[grade[0]]
-            grade_data = {'id': grade[0], 'name': st[0], 'math': grade[2], 'english': grade[3], 'hindi': grade[4]}
+            st = students[grade['student_id']]
+            grade_data = {'id': grade['student_id'], 'name': st['student_name'], **grade}
             try:
                 students_ = info[date]
             except KeyError:
-                info[date] = {grade[0]: grade_data}
+                info[date] = {grade['student_id']: grade_data}
             else:
                 try:
-                    student = students_[grade[0]]
+                    student = students_[grade['student_id']]
                 except KeyError:
-                    students_[grade[0]] = grade_data
+                    students_[grade['student_id']] = grade_data
                 else:
                     student.update(grade_data)
 
         for att in attendance:
-            dt = datetime.fromisoformat(att[1])
+            dt = datetime.fromisoformat(att['date'])
             date = (dt.year, dt.month)
-            st = students[att[0]]
-            att_data = {'id': att[0], 'name': st[0], str(dt.day): att[2]}
+            st = students[att['student_id']]
+            att_data = {'id': att['student_id'], 'name': st['student_name'], str(dt.day): att['status']}
             try:
                 students_ = info[date]
             except KeyError:
-                info[date] = {att[0]: att_data}
+                info[date] = {att['student_id']: att_data}
             else:
                 try:
-                    student = students_[att[0]]
+                    student = students_[att['student_id']]
                 except KeyError:
-                    students_[att[0]] = att_data
+                    students_[att['student_id']] = att_data
                 else:
                     student.update(att_data)
 
@@ -312,9 +285,7 @@ class TeacherView(BoxLayout):
             self.student_overview.add_widget(tab)
 
     def add_child(self, data):
-        ws = self.sh.worksheet("Students")
-        i = ws.row_count
-        ws.append_row([str(i)] + data)
+        api.add_student(*data)
         self.attendance_list.clear_widgets()
         self.student_list.clear_widgets()
         self.grades_list.clear_widgets()

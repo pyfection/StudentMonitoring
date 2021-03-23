@@ -40,7 +40,7 @@ venv.bak/
 .idea
 
 # Project
-teacher_credentials.json
+credentials.json
 session.json
 mock_files/
 buildozer/

@@ -12,6 +12,9 @@ class Worksheet:
     def append_row(self, data):
         self.records.append(data)
 
+    def row_values(self, row):
+        return self.records[row]
+
     @property
     def row_count(self):
         return len(self.records)
@@ -22,6 +25,8 @@ class Sheet:
         ws = Worksheet()
         if name == 'Students':
             ws.records = students
+        elif name == 'Teachers':
+            ws.records = teachers
         elif name == 'Attendance':
             ws.records = attendance
         elif name == 'Grades':
@@ -34,7 +39,7 @@ class Sheet:
 
 
 class Client:
-    def open_by_url(self, link):
+    def open_by_key(self, key):
         return Sheet()
 
 
@@ -44,6 +49,9 @@ def authorize(credentials):
 
 with open('mock_files/students.csv') as f:
     students = [line.split(';') for line in f.read().split('\n')]
+
+with open('mock_files/teachers.csv') as f:
+    teachers = [line.split(';') for line in f.read().split('\n')]
 
 with open('mock_files/attendance.csv') as f:
     attendance = [line.split(';') for line in f.read().split('\n')]

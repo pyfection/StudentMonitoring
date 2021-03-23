@@ -22,7 +22,7 @@ class StudentOverview(TabbedPanelItem):
         self.students = students
         holidays = set(
             d
-            for y, m, d in [tuple(map(int, hd[0].split('-'))) for hd in holidays]
+            for y, m, d in [tuple(map(int, hd.split('-'))) for hd in holidays.keys()]
             if y == year and m == month
         )
 
