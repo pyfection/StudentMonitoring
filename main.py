@@ -160,6 +160,7 @@ class TeacherView(BoxLayout):
             bx = BoxLayout()
             name = Label(text=student[1])
             date = TextInput(hint_text="Date (YYYY-MM-DD)")
+            gtype = TextInput(hint_text="Type")
             math = TextInput(hint_text="Math")
             english = TextInput(hint_text="English")
             hindi = TextInput(hint_text="Hindi")
@@ -170,12 +171,14 @@ class TeacherView(BoxLayout):
                 if dt.year != today.year or dt.month != today.month:
                     continue
                 date.text = grade[1]
-                math.text = grade[2]
-                english.text = grade[3]
-                hindi.text = grade[4]
+                gtype.text = grade[2]
+                math.text = grade[3]
+                english.text = grade[4]
+                hindi.text = grade[5]
                 break
             bx.add_widget(name)
             bx.add_widget(date)
+            bx.add_widget(gtype)
             bx.add_widget(math)
             bx.add_widget(english)
             bx.add_widget(hindi)
