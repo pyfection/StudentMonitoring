@@ -1,6 +1,7 @@
+from uuid import uuid4
 
-# import gspread_mock as gspread
-import gspread
+import gspread_mock as gspread
+# import gspread
 from gspread.exceptions import APIError
 from google.oauth2.service_account import Credentials
 
@@ -119,8 +120,7 @@ class API:
         data = list(data)
         data.insert(-1, self.teacher)
         ws = self.sh.worksheet("Students")
-        i = ws.row_count + 1
-        ws.append_row([str(i)] + data)
+        ws.append_row([str(uuid4())] + data)
 
 
 api = API()

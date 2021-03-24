@@ -3,7 +3,7 @@
 class Worksheet:
     records = []
 
-    def get_all_records(self, head):
+    def get_all_values(self):
         return self.records
 
     def get(self, range_name):

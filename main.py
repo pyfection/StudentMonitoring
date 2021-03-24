@@ -347,18 +347,32 @@ class MonitoringApp(App):
     def on_ready(self):
         with open('session.json') as f:
             session = json.load(f)
-        if self.check_authenticate(
-                session.get('key'), session.get('email'), session.get('first_name'), session.get('last_name')):
-            self.root.current = 'teacher'
-            self.root.ids.teacher_view.load_students()
-        else:
-            self.root.current = 'auth'
+
+        self.check_authenticate(
+            session.get('key'), session.get('email'), session.get('first_name'), session.get('last_name')
+        )
 
     def check_authenticate(self, key, email, first_name, last_name):
         print('authorize')
         if not api.auth(key, email, first_name, last_name):
             print("Couldn't authenticate")
+            self.root.current = 'auth'
             return False
+        print("Successful authenticated")
+        self.root.current = 'teacher'
+        self.root.ids.teacher_view.load_students()
+
+        with open('session.json', 'w') as f:
+            json.dump(
+                {
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "email": email,
+                    "key": key,
+                },
+                f, indent=4
+            )
+
         return True
 
 
