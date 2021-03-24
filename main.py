@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import json
 
 from kivymd.app import MDApp as App
+from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import ToggleButton
@@ -340,6 +341,10 @@ class MonitoringApp(App):
         self.theme_cls.accent_palette = "Brown"
         self.theme_cls.theme_style = "Dark"
 
+    def on_start(self):
+        Clock.schedule_once(lambda *args: self.on_ready(), 4)  # ToDo: make sure this gets executed after everything is loaded
+
+    def on_ready(self):
         with open('session.json') as f:
             session = json.load(f)
         if self.check_authenticate(

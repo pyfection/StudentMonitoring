@@ -1,5 +1,7 @@
 
-import gspread_mock as gspread
+# import gspread_mock as gspread
+import gspread
+from gspread.exceptions import APIError
 from google.oauth2.service_account import Credentials
 
 
@@ -19,10 +21,14 @@ class API:
         )
         self.gc = gspread.authorize(credentials)
         self.sh = self.gc.open_by_key(key)
-        ws = self.sh.worksheet("Teachers")
+        try:
+            ws = self.sh.worksheet("Teachers")
+        except APIError:
+            return False
+
         values = [email, first_name, last_name]
-        for i in range(ws.row_count):
-            if ws.row_values(i) == values:
+        for row in ws.get_all_values():
+            if row == values:
                 break
         else:
             ws.append_row(values)
@@ -31,12 +37,12 @@ class API:
 
     def holidays(self):
         ws = self.sh.worksheet("Holidays")
-        holidays = ws.get(f'A2:B{ws.row_count - 1}')
+        holidays = ws.get_all_values()
         return {key: value for key, value in holidays}
 
     def students(self):
         ws = self.sh.worksheet("Students")
-        students = ws.get(f'A2:P{ws.row_count-1}')
+        students = ws.get_all_values()
         return [{
             "id": student[0],
             "student_name": student[1],
@@ -69,7 +75,7 @@ class API:
 
     def attendance(self):
         ws = self.sh.worksheet("Attendance")
-        attendance = ws.get(f'A2:C{ws.row_count-1}')
+        attendance = ws.get_all_values()
         return [{
             'student_id': att[0],
             'date': att[1],
@@ -78,7 +84,7 @@ class API:
 
     def fees(self):
         ws = self.sh.worksheet("Fees")
-        fees = ws.get(f'A2:E{ws.row_count-1}')
+        fees = ws.get_all_values()
         return [{
             'student_id': fee[0],
             'date': fee[1],
@@ -89,7 +95,7 @@ class API:
 
     def grades(self):
         ws = self.sh.worksheet("Grades")
-        grades = ws.get(f'A2:F{ws.row_count-1}')
+        grades = ws.get_all_values()
         return [{
             'student_id': grade[0],
             'date': grade[1],
@@ -102,12 +108,12 @@ class API:
     def range_plans(self):
         # ToDo: to be implemented
         ws = self.sh.worksheet("RangePlans")
-        range_plans = ws.get(f'A2:R{ws.row_count-1}')
+        range_plans = ws.get_all_values()
 
     def month_plans(self):
         # ToDo: to be implemented
         ws = self.sh.worksheet("MonthPlans")
-        month_plans = ws.get(f'A2:R{ws.row_count-1}')
+        month_plans = ws.get_all_values()
 
     def add_student(self, *data):
         data = list(data)
