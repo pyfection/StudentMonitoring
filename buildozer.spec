@@ -43,10 +43,10 @@ requirements = python3,cachetools==4.2.1,certifi==2020.12.5,chardet==4.0.0,color
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = %(source.dir)s/Greenworld_Logo_Coloured.png
+presplash.filename = %(source.dir)s/splash.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = %(source.dir)s/icon.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait

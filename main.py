@@ -74,9 +74,10 @@ class NewChildView(MDList):
 
 class MonitoringApp(App):
     def build(self):
-        self.theme_cls.primary_palette = "Gray"
-        self.theme_cls.accent_palette = "Brown"
-        self.theme_cls.theme_style = "Dark"
+        self.icon = 'icon.png'
+        self.theme_cls.primary_palette = "Green"
+        self.theme_cls.accent_palette = "LightGreen"
+        self.manager = self.root.manager
 
     def on_start(self):
         Clock.schedule_once(lambda *args: self.on_ready(), 4)  # ToDo: make sure this gets executed after everything is loaded
@@ -96,8 +97,8 @@ class MonitoringApp(App):
             self.root.current = 'auth'
             return False
         print("Successful authenticated")
-        self.root.current = 'teacher'
-        self.root.ids.teacher_view.load_students()
+        self.manager.current = 'today'
+        # self.root.ids.teacher_view.load_students()
 
         with open('session.json', 'w') as f:
             json.dump(
@@ -113,9 +114,15 @@ class MonitoringApp(App):
         return True
 
 
-Factory.register('TeacherView', module='widgets.teacher_view')
 Factory.register('AuthView', module='main')
+# Factory.register('TeacherView', module='widgets.teacher_view')
+Factory.register('TodayView', module='widgets.today_view')
+Factory.register('StudentsView', module='widgets.students_view')
+Factory.register('GradesView', module='widgets.grades_view')
+Factory.register('FeesView', module='widgets.fees_view')
 Factory.register('PlanView', module='widgets.plan_view')
+Factory.register('OverviewView', module='widgets.overview_view')
+Factory.register('MDFillRoundToggleButton', module='widgets.md_toggle_button')
 
 
 if __name__ == '__main__':

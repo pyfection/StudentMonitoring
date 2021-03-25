@@ -5,11 +5,13 @@ from kivymd.uix.button import MDRoundFlatIconButton
 from kivymd.uix.picker import MDDatePicker
 
 
+Builder.load_file('widgets/date_picker_button.kv')
+
+
 class DatePickerButton(MDRoundFlatIconButton):
     format = StringProperty('%d-%m-%Y')
 
     def __init__(self, **kwargs):
-        Builder.load_file('widgets/date_picker_button.kv')
         super().__init__(**kwargs)
 
     def show_date_picker(self):

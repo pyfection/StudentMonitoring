@@ -5,6 +5,7 @@ from kivy.uix.tabbedpanel import TabbedPanelItem
 from kivy.uix.label import Label
 from kivy.lang.builder import Builder
 
+import settings
 from widgets.advanced_label import AdvancedLabel
 
 Builder.load_file('widgets/student_overview.kv')
@@ -13,9 +14,6 @@ Builder.load_file('widgets/student_overview.kv')
 class StudentOverview(TabbedPanelItem):
     HOLIDAY_COLOR = (.2, .4, .7, 1)
     SUNDAY_COLOR = (.3, .5, .7, 1)
-    PRESENT_COLOR = (0, .7, 0, 1)
-    ABSENT_COLOR = (1, .7, 0, 1)
-    LATE_COLOR = (.7, .7, 0, 1)
 
     def __init__(self, students, year, month, holidays, **kwargs):
         super(StudentOverview, self).__init__(text=f'{year} {month}', **kwargs)
@@ -70,11 +68,11 @@ class StudentOverview(TabbedPanelItem):
                     bg_color = self.HOLIDAY_COLOR
                 elif att == 'present':
                     att = 'P'
-                    bg_color = self.PRESENT_COLOR
+                    bg_color = settings.PRESENT_COLOR
                 elif att == 'absent':
                     att = 'A'
-                    bg_color = self.ABSENT_COLOR
+                    bg_color = settings.ABSENT_COLOR
                 elif att == 'late':
                     att = 'L'
-                    bg_color = self.LATE_COLOR
+                    bg_color = settings.LATE_COLOR
                 self.grid.add_widget(AdvancedLabel(text=att, bg_color=bg_color))

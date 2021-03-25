@@ -1,0 +1,85 @@
+#:import calendar calendar
+
+<OverviewView>:
+    toolbar: toolbar
+    orientation: "vertical"
+
+    NativoToolbar:
+        id: toolbar
+        left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+
+    MDTabs:
+        id: tabs
+
+
+<OverviewTab>:
+    grid: grid
+    text: f'{calendar.month_name[self.month]}-{self.year}'
+
+    ScrollView:
+
+        GridLayout:
+            id: grid
+            row_force_default: True
+            row_default_height: 120
+            cols: 41
+            size_hint_x: None
+            width: sum(c.width for c in self.children)
+
+            GridLabel:
+                text: "ID"
+                size_hint_x: None
+                width: 800
+            GridLabel:
+                text: "Name"
+                size_hint_x: None
+                width: 600
+            GridLabel:
+                text: "Attendance Days"
+                size_hint_x: None
+                width: 500
+            GridLabel:
+                text: "Math"
+                size_hint_x: None
+                width: 200
+            GridLabel:
+                text: "English"
+                size_hint_x: None
+                width: 200
+            GridLabel:
+                text: "Hindi"
+                size_hint_x: None
+                width: 200
+            GridLabel:
+                text: "Fees Amount"
+                size_hint_x: None
+                width: 180
+            GridLabel:
+                text: "Fees Date"
+                size_hint_x: None
+                width: 180
+            GridLabel:
+                text: "Fees Receipt"
+                size_hint_x: None
+                width: 180
+            GridLabel:
+                text: "Fees Books"
+                size_hint_x: None
+                width: 180
+
+
+<GridLabel>:
+    halign: 'center'
+    bg_color: 1, 1, 1, 0
+
+    canvas.before:
+        Color:
+            rgba: self.bg_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    canvas:
+        Color:
+            rgba: app.theme_cls.primary_color
+        Line:
+            points: self.x, self.y, self.right, self.y, self.right, self.top, self.x, self.top

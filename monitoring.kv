@@ -1,210 +1,340 @@
 #:import date datetime.date
 #:import timedelta datetime.timedelta
 #:import Animation kivy.animation.Animation
-ScreenManager:
-    Screen:
-        name: "splash"
-        MDBoxLayout:
-            orientation: "vertical"
-            padding: 50, 50, 50, 50
-            spacing: 50
 
-            Image:
-                source: "Greenworld_Logo_Coloured.png"
+Screen:
+    manager: manager
 
-            ScatterLayout:
-                size_hint: 1, 1
-                on_parent: anim = Animation(scale=1.5) + Animation(scale=1); anim.repeat = True; anim.start(self)
-                Label:
-                    size_hint: 1, 1
-                    text: "Loading..."
-                    color: 0.2, 0.7, 0.3, 1
-                    font_size: 30
-                    bold: True
-                    text_size: self.size
-                    halign: 'center'
-                    valign: 'middle'
+    MDNavigationLayout:
 
-    Screen:
-        name: "auth"
-        AuthView:
-            private_key: private_key
-            first_name: first_name
-            last_name: last_name
-            email: email
+        ScreenManager:
+            nav_drawer: nav_drawer
+            id: manager
 
-            id: auth_view
-            orientation: "vertical"
-            BoxLayout:
-                TextInput:
-                    id: first_name
-                    write_tab: False
-                    hint_text: "First Name"
-                    text: self.parent.parent.session.get('first_name')
-                    multiline: False
-                TextInput:
-                    id: last_name
-                    write_tab: False
-                    hint_text: "Last Name"
-                    text: self.parent.parent.session.get('last_name')
-                    multiline: False
-            TextInput:
-                id: email
-                write_tab: False
-                hint_text: "Email"
-                text: self.parent.session.get('email')
-                multiline: False
-            TextInput:
-                id: private_key
-                write_tab: False
-                hint_text: "Private Key"
-            BoxLayout:
-                ToggleButton:
-                    id: teacher_button
-                    text: "Teacher"
-                    group: "account_type"
-                    state: "down"
-                ToggleButton:
-                    id: admin_button
-                    text: "Admin"
-                    group: "account_type"
-                    disabled: True  # ToDo: remove once teacher view exists
-            Button:
-                text: "Authenticate"
-#                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
-                on_press: app.check_authenticate(private_key.text, email.text, first_name.text, last_name.text)
-
-    Screen:
-        name: "teacher"
-        TeacherView:
-            id: teacher_view
-
-
-    Screen:
-        name: "add_child"
-
-        ScrollView:
-            NewChildView:
-                id: new_child_view
-                size_hint_y: None
-                height: sum(c.height for c in self.children)
-
-                name: name
-                date_of_joining: date_of_joining
-                group: group
-                name_father: name_father
-                name_mother: name_mother
-                address: address
-                phone_mother: phone_mother
-                phone_father: phone_father
-                dob: dob
-                aadhar: aadhar
-                official_class: official_class
-                goes_government_school_yes: goes_government_school_yes
-                goes_government_school_no: goes_government_school_no
-                occupation_mother: occupation_mother
-                occupation_father: occupation_father
-                comment: comment
-
-                MDTextField:
-                    id: name
-                    hint_text: "Name"
-                    write_tab: False
-
-                MDTextField:
-                    id: date_of_joining
-                    hint_text: "Date of joining (DD-MM-YYYY)"
-                    write_tab: False
-
-                MDTextField:
-                    id: group
-                    hint_text: "Group"
-                    write_tab: False
-
-                MDTextField:
-                    id: name_father
-                    hint_text: "Father's name"
-                    write_tab: False
-
-                MDTextField:
-                    id: name_mother
-                    hint_text: "Mother's name"
-                    write_tab: False
-
-                MDTextField:
-                    id: address
-                    hint_text: "Address"
-                    write_tab: False
-
-                MDTextField:
-                    id: phone_mother
-                    hint_text: "Phone number (Mother)"
-                    write_tab: False
-
-                MDTextField:
-                    id: phone_father
-                    hint_text: "Phone number (Father)"
-                    write_tab: False
-
-                MDTextField:
-                    id: dob
-                    hint_text: "Date of birth (DD-MM-YYYY)"
-                    write_tab: False
-
-                MDTextField:
-                    id: aadhar
-                    hint_text: "Aadhar Card number"
-                    write_tab: False
-
-                MDTextField:
-                    id: official_class
-                    hint_text: "Official Class"
-                    write_tab: False
-
+            Screen:
+                name: "splash"
                 MDBoxLayout:
+                    orientation: "vertical"
+                    padding: 50, 50, 50, 50
+                    spacing: 50
+
+                    Image:
+                        source: "Greenworld_Logo_Coloured.png"
+
+                    ScatterLayout:
+                        size_hint: 1, 1
+                        on_parent: anim = Animation(scale=1.5) + Animation(scale=1); anim.repeat = True; anim.start(self)
+                        Label:
+                            size_hint: 1, 1
+                            text: "Loading..."
+                            color: 0.2, 0.7, 0.3, 1
+                            font_size: 30
+                            bold: True
+                            text_size: self.size
+                            halign: 'center'
+                            valign: 'middle'
+
+            Screen:
+                name: "auth"
+                AuthView:
+                    private_key: private_key
+                    first_name: first_name
+                    last_name: last_name
+                    email: email
+
+                    id: auth_view
+                    orientation: "vertical"
+                    BoxLayout:
+                        TextInput:
+                            id: first_name
+                            write_tab: False
+                            hint_text: "First Name"
+                            text: self.parent.parent.session.get('first_name')
+                            multiline: False
+                        TextInput:
+                            id: last_name
+                            write_tab: False
+                            hint_text: "Last Name"
+                            text: self.parent.parent.session.get('last_name')
+                            multiline: False
+                    TextInput:
+                        id: email
+                        write_tab: False
+                        hint_text: "Email"
+                        text: self.parent.session.get('email')
+                        multiline: False
+                    TextInput:
+                        id: private_key
+                        write_tab: False
+                        hint_text: "Private Key"
+                    BoxLayout:
+                        ToggleButton:
+                            id: teacher_button
+                            text: "Teacher"
+                            group: "account_type"
+                            state: "down"
+                        ToggleButton:
+                            id: admin_button
+                            text: "Admin"
+                            group: "account_type"
+                            disabled: True  # ToDo: remove once teacher view exists
+                    Button:
+                        text: "Authenticate"
+        #                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
+                        on_press: app.check_authenticate(private_key.text, email.text, first_name.text, last_name.text)
+
+            Screen:
+                name: "today"
+                on_pre_enter: today_view.reload()
+
+                TodayView:
+                    nav_drawer: nav_drawer
+                    id: today_view
+
+            Screen:
+                name: "students"
+                on_pre_enter: students_view.reload()
+
+                StudentsView:
+                    nav_drawer: nav_drawer
+                    id: students_view
+
+            Screen:
+                name: "grades"
+                on_pre_enter: grades_view.reload()
+
+                GradesView:
+                    nav_drawer: nav_drawer
+                    id: grades_view
+
+            Screen:
+                name: "fees"
+                on_pre_enter: fees_view.reload()
+
+                FeesView:
+                    nav_drawer: nav_drawer
+                    id: fees_view
+
+            Screen:
+                name: "plan"
+                on_pre_enter: plan_view.reload()
+
+                PlanView:
+                    nav_drawer: nav_drawer
+                    id: plan_view
+
+            Screen:
+                name: "overview"
+                on_pre_enter: overview_view.reload()
+
+                OverviewView:
+                    nav_drawer: nav_drawer
+                    id: overview_view
+
+
+            Screen:
+                name: "add_child"
+
+                ScrollView:
+                    NewChildView:
+                        id: new_child_view
+                        size_hint_y: None
+                        height: sum(c.height for c in self.children)
+
+                        name: name
+                        date_of_joining: date_of_joining
+                        group: group
+                        name_father: name_father
+                        name_mother: name_mother
+                        address: address
+                        phone_mother: phone_mother
+                        phone_father: phone_father
+                        dob: dob
+                        aadhar: aadhar
+                        official_class: official_class
+                        goes_government_school_yes: goes_government_school_yes
+                        goes_government_school_no: goes_government_school_no
+                        occupation_mother: occupation_mother
+                        occupation_father: occupation_father
+                        comment: comment
+
+                        MDTextField:
+                            id: name
+                            hint_text: "Name"
+                            write_tab: False
+
+                        MDTextField:
+                            id: date_of_joining
+                            hint_text: "Date of joining (DD-MM-YYYY)"
+                            write_tab: False
+
+                        MDTextField:
+                            id: group
+                            hint_text: "Group"
+                            write_tab: False
+
+                        MDTextField:
+                            id: name_father
+                            hint_text: "Father's name"
+                            write_tab: False
+
+                        MDTextField:
+                            id: name_mother
+                            hint_text: "Mother's name"
+                            write_tab: False
+
+                        MDTextField:
+                            id: address
+                            hint_text: "Address"
+                            write_tab: False
+
+                        MDTextField:
+                            id: phone_mother
+                            hint_text: "Phone number (Mother)"
+                            write_tab: False
+
+                        MDTextField:
+                            id: phone_father
+                            hint_text: "Phone number (Father)"
+                            write_tab: False
+
+                        MDTextField:
+                            id: dob
+                            hint_text: "Date of birth (DD-MM-YYYY)"
+                            write_tab: False
+
+                        MDTextField:
+                            id: aadhar
+                            hint_text: "Aadhar Card number"
+                            write_tab: False
+
+                        MDTextField:
+                            id: official_class
+                            hint_text: "Official Class"
+                            write_tab: False
+
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: 80
+
+                            MDLabel:
+                                text: "Goes to government school:"
+
+                            ToggleButton:
+                                id: goes_government_school_yes
+                                size_hint_x: None
+                                width: 100
+                                text: "Yes"
+                                group: "government_school"
+                                state: "down"
+
+                            ToggleButton:
+                                id: goes_government_school_no
+                                size_hint_x: None
+                                width: 100
+                                text: "No"
+                                group: "government_school"
+
+                        MDTextField:
+                            id: occupation_mother
+                            hint_text: "Mother' main occupation"
+                            write_tab: False
+
+                        MDTextField:
+                            id: occupation_father
+                            hint_text: "Father' main occupation"
+                            write_tab: False
+
+                        MDTextField:
+                            id: comment
+                            write_tab: False
+                            multiline: True
+                            hint_text: "Comment"
+
+                        Widget:
+
+                        MDFillRoundFlatIconButton:
+                            icon: "plus"
+                            size_hint_x: 1
+                            size_hint_y: None
+                            height: 80
+                            text: "Add"
+                            on_press: self.parent.submit()
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: "8dp"
+                spacing: "8dp"
+
+                AnchorLayout:
+                    anchor_x: "left"
                     size_hint_y: None
-                    height: 80
+                    height: avatar.height
 
-                    MDLabel:
-                        text: "Goes to government school:"
+                    Image:
+                        id: avatar
+                        source: "Greenworld_Logo_Coloured.png"
 
-                    ToggleButton:
-                        id: goes_government_school_yes
-                        size_hint_x: None
-                        width: 100
-                        text: "Yes"
-                        group: "government_school"
-                        state: "down"
+                ScrollView:
 
-                    ToggleButton:
-                        id: goes_government_school_no
-                        size_hint_x: None
-                        width: 100
-                        text: "No"
-                        group: "government_school"
+                    MDList:
+                        TwoLineIconListItem:
+                            text: "Today"
+                            secondary_text: date.today().strftime('%d-%m-%Y')
+                            on_release:
+                                manager.current = 'today'
+                                nav_drawer.set_state("close")
+                            IconLeftWidget:
+                                icon: "calendar-today"
 
-                MDTextField:
-                    id: occupation_mother
-                    hint_text: "Mother' main occupation"
-                    write_tab: False
+                        OneLineIconListItem:
+                            text: "Students"
+                            on_release:
+                                manager.current = 'students'
+                                nav_drawer.set_state("close")
+                            IconLeftWidget:
+                                icon: "human-child"
 
-                MDTextField:
-                    id: occupation_father
-                    hint_text: "Father' main occupation"
-                    write_tab: False
+                        TwoLineIconListItem:
+                            text: "Grades"
+                            secondary_text: (date.today().replace(day=1) - timedelta(days=1)).strftime('%b-%Y')
+                            on_release:
+                                manager.current = 'grades'
+                                nav_drawer.set_state("close")
+                            IconLeftWidget:
+                                icon: "star"
 
-                MDTextField:
-                    id: comment
-                    write_tab: False
-                    multiline: True
-                    hint_text: "Comment"
+                        TwoLineIconListItem:
+                            text: "Fees"
+                            secondary_text: (date.today().replace(day=1) - timedelta(days=1)).strftime('%b-%Y')
+                            on_release:
+                                manager.current = 'fees'
+                                nav_drawer.set_state("close")
+                            IconLeftWidget:
+                                icon: "cash"
 
-                Widget:
+                        OneLineIconListItem:
+                            text: "Plan"
+                            on_release:
+                                manager.current = 'plan'
+                                nav_drawer.set_state("close")
+                            IconLeftWidget:
+                                icon: "notebook"
 
-                MDFillRoundFlatIconButton:
-                    icon: "plus"
-                    size_hint_x: 1
-                    size_hint_y: None
-                    height: 80
-                    text: "Add"
-                    on_press: self.parent.submit()
+                        OneLineIconListItem:
+                            text: "Overview"
+                            on_release:
+                                manager.current = 'overview'
+                                nav_drawer.set_state("close")
+                            IconLeftWidget:
+                                icon: "sunglasses"
+
+
+<NativoToolbar@MDToolbar>:
+    id: toolbar
+    pos_hint: {"top": 1}
+    title: "Greenworld Education"
+    elevation: 10

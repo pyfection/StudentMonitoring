@@ -1,0 +1,16 @@
+<FeesView>:
+    toolbar: toolbar
+    fees_list: fees_list
+    orientation: "vertical"
+
+    NativoToolbar:
+        id: toolbar
+        left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+
+    ScrollView:
+        MDBoxLayout:
+            id: fees_list
+            adaptive_height: True
+            orientation: "vertical"
+            size_hint_x: None
+            width: 1500

@@ -2,9 +2,9 @@ from datetime import date, timedelta
 
 from kivy.lang.builder import Builder
 from kivy.properties import ListProperty, DictProperty, StringProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.textinput import TextInput
-from kivy.uix.label import Label
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.textfield import MDTextField, MDTextFieldRect
+from kivymd.uix.label import MDLabel
 from kivymd.uix.picker import MDDatePicker
 
 
@@ -14,11 +14,11 @@ Builder.load_file('widgets/plan_view.kv')
 PROTECTED_SUBJECTS = ["Math", "English", "Hindi"]
 
 
-class SubjectDesc(TextInput):
+class SubjectDesc(MDTextFieldRect):
     pass
 
 
-class MonthRow(BoxLayout):
+class MonthRow(MDBoxLayout):
     initial = True
     month = StringProperty()
     data = DictProperty()
@@ -35,7 +35,7 @@ class MonthRow(BoxLayout):
         self.add_widget(sj)
 
 
-class RangeRow(BoxLayout):
+class RangeRow(MDBoxLayout):
     initial = True
     start = StringProperty()
     end = StringProperty()
@@ -53,7 +53,7 @@ class RangeRow(BoxLayout):
         self.add_widget(sj)
 
 
-class PlanView(BoxLayout):
+class PlanView(MDBoxLayout):
     initial = True
     subjects = ListProperty()
     data = DictProperty()
@@ -78,11 +78,11 @@ class PlanView(BoxLayout):
 
     def add_subject(self, subject):
         if subject in PROTECTED_SUBJECTS:
-            wg = Label(size_hint_x=None, width=400, text=subject)
+            wg = MDLabel(size_hint_x=None, width=400, text=subject, halign='center', bold=True)
         else:
-            wg = TextInput(size_hint_x=None, width=400, text=subject)
+            wg = MDTextField(size_hint_x=None, width=400, text=subject)
 
-        self.ids.subjects.add_widget(wg, index=1)
+        self.ids.subjects.add_widget(wg)
         for row in self.rows.children:
             row.add_subject(subject)
         self.ids.subjects.width = sum(c.width for c in self.ids.subjects.children)
@@ -137,3 +137,23 @@ class PlanView(BoxLayout):
 
             for subject, desc in row.descs.items():
                 row_data[subject] = desc
+
+    def reload(self):
+        self.subjects = ["Math", "English", "Hindi", "Arts"]
+        self.data = {
+            'months': {
+                '2021-03': {
+                    "Math": "Test data math",
+                    "Arts": "Test data arts",
+                },
+                '2021-04': {
+                    "English": "Test data english",
+                    "Arts": "Test data arts",
+                },
+            },
+            'ranges': {
+                ('2021-03-01', '2021-03-05'): {
+                    "Math": "Exact math subject"
+                }
+            }
+        }

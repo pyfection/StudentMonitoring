@@ -1,0 +1,17 @@
+<GradesView>:
+    toolbar: toolbar
+    grades_list: grades_list
+    orientation: "vertical"
+
+    NativoToolbar:
+        id: toolbar
+        left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+        right_action_items: [['link-variant', lambda x: print('Not implemented yet'), 'Link Word']]
+
+    ScrollView:
+        MDBoxLayout:
+            id: grades_list
+            adaptive_height: True
+            orientation: "vertical"
+            size_hint_x: None
+            width: 2000

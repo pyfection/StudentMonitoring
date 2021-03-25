@@ -1,0 +1,104 @@
+<StudentsView>:
+    toolbar: toolbar
+    student_list: student_list
+    orientation: "vertical"
+
+    NativoToolbar:
+        id: toolbar
+        left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+        right_action_items: [['account-plus', lambda x: app.manager.switch_to(app.manager.get_screen('add_child')), 'Add Student']]
+
+    ScrollView:
+        MDBoxLayout:
+            id: student_list
+            adaptive_height: True
+            orientation: "vertical"
+
+<StudentContent>
+    adaptive_height: True
+    orientation: "vertical"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.student_name
+        secondary_text: "Name of student"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.joining_date
+        secondary_text: 'Date of joining'
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.group
+        secondary_text: "gr #"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.name_father
+        secondary_text: "Father's name"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.name_mother
+        secondary_text: "Mother's name"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.address
+        secondary_text: "Address"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.phone_number_mother
+        secondary_text: "Phone number (Mother)"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.phone_number_father
+        secondary_text: "Phone number (Father)"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.dob
+        secondary_text: "Date of birth"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.aadhar_card_number
+        secondary_text: "Aadhar Card number"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.official_class
+        secondary_text: "Official Class"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.goes_goverment_school
+        secondary_text: "Goes to goverment school"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.occupation_mother
+        secondary_text: "Mother' main occupation"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.occupation_father
+        secondary_text: "Father' main occupation"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.status
+        secondary_text: "Status"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.teacher
+        secondary_text: "Teacher"
+
+    TwoLineIconListItem:
+        divider: None
+        text: root.comment
+        secondary_text: "Comment"

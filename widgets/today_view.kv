@@ -1,0 +1,51 @@
+#:import settings settings
+
+<TodayView>:
+    toolbar: toolbar
+    attendance: attendance
+    orientation: "vertical"
+
+    NativoToolbar:
+        id: toolbar
+        left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+
+    ScrollView:
+        MDBoxLayout:
+            id: attendance
+            adaptive_height: True
+            orientation: "vertical"
+
+
+<Attendance>:
+    adaptive_height: True
+
+    on_state: print('on state')
+
+    MDLabel:
+        text: root.student_name
+
+    MDFillRoundToggleButton:
+        text: "present"
+        background_normal: (1, 1, 1, 0)
+        group: root.group
+        state: 'down' if root.state == 'present' else 'normal'
+        background_down: settings.PRESENT_COLOR
+
+    MDFillRoundToggleButton:
+        text: "absent"
+        background_normal: (1, 1, 1, 0)
+        group: root.group
+        state: 'down' if root.state == 'absent' else 'normal'
+        background_down: settings.ABSENT_COLOR
+
+    MDFillRoundToggleButton:
+        text: "late"
+        background_normal: (1, 1, 1, 0)
+        group: root.group
+        state: 'down' if root.state == 'late' else 'normal'
+        background_down: settings.LATE_COLOR
+
+
+<AttendanceContent>:
+    adaptive_height: True
+    orientation: "vertical"
