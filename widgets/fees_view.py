@@ -1,12 +1,22 @@
 from datetime import datetime
 
 from kivy.lang.builder import Builder
+from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 
 from api import api
 from widgets.date_picker_button import DatePickerButton
+
+
+class FeesRow(MDBoxLayout):
+    student_id = StringProperty()
+    name = StringProperty()
+    date = StringProperty()
+    amount = StringProperty()
+    receipt = StringProperty()
+    books = StringProperty()
 
 
 class FeesView(MDBoxLayout):
@@ -24,27 +34,30 @@ class FeesView(MDBoxLayout):
         for student in students:
             if student['status'] == 'inactive':
                 continue
-            bx = MDBoxLayout(padding=(10, 10, 10, 10), spacing=10, adaptive_height=True)
-            name = MDLabel(text=student['student_name'])
-            date = DatePickerButton(format='%b-%Y')
-            amount = MDTextField(hint_text="Amount")
-            receipt = MDTextField(hint_text="Receipt")
-            books = MDTextField(hint_text="Books Payment")
+
+            row = FeesRow()
+            row.student_id = student['id']
+            row.name = student['student_name']
+
             for fee in fees:
                 if fee['student_id'] != student['id']:
                     continue
                 dt = datetime.fromisoformat(fee['date'])
                 if dt.year != today.year or dt.month != today.month:
                     continue
-                date.text = dt.strftime('%b-%Y')
-                amount.text = fee['amount']
-                receipt.text = fee['receipt']
-                books.text = fee['books']
+                row.date = dt.strftime('%Y-%m-%d')
+                row.amount = fee['amount']
+                row.receipt = fee['receipt']
+                row.books = fee['books']
                 break
-            bx.add_widget(name)
-            bx.add_widget(date)
-            bx.add_widget(amount)
-            bx.add_widget(receipt)
-            bx.add_widget(books)
 
-            self.fees_list.add_widget(bx)
+            self.fees_list.add_widget(row)
+
+    def save(self):
+        data = []
+        for row in self.fees_list.children:
+            data.append({
+                'student_id': row.student_id, 'date': row.date,
+                'amount': row.amount, 'receipt': row.receipt, 'books': row.books
+            })
+        api.upsert_fees(data)

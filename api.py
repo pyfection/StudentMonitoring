@@ -151,5 +151,24 @@ class API:
         ws.clear()
         ws.insert_rows(grades)
 
+    def upsert_fees(self, data):
+        fees = {
+            (fee['student_id'], fee['date']): (fee['amount'], fee['receipt'], fee['books'])
+            for fee in self.fees()
+        }
+        data = {
+            (fee['student_id'], fee['date']): (fee['amount'], fee['receipt'], fee['books'])
+            for fee in data
+        }
+        fees.update(data)
+        fees = [
+            [student_id, date, amount, receipt, books]
+            for (student_id, date), (amount, receipt, books) in fees.items()
+            if date and amount and receipt
+        ]
+        ws = self.sh.worksheet("Fees")
+        ws.clear()
+        ws.insert_rows(fees)
+
 
 api = API()

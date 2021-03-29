@@ -6,6 +6,7 @@
     NativoToolbar:
         id: toolbar
         left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+        right_action_items: [['content-save', lambda x: root.save(), "Save"]]
 
     ScrollView:
         MDBoxLayout:
@@ -14,3 +15,36 @@
             orientation: "vertical"
             size_hint_x: None
             width: 1500
+
+<FeesRow>:
+    padding: (10, 10, 10, 10)
+    spacing: 10
+    adaptive_height: True
+
+    MDLabel:
+        id: name
+        text: root.name
+
+    DatePickerButton:
+        id: date
+        format: '%d-%m-%Y'
+        date: root.date
+        on_date: root.date = self.date
+
+    MDTextField:
+        id: amount
+        hint_text: "Amount"
+        text: root.amount
+        on_text: root.amount = self.text
+
+    MDTextField:
+        id: receipt
+        hint_text: "Receipt"
+        text: root.receipt
+        on_text: root.receipt = self.text
+
+    MDTextField:
+        id: books
+        hint_text: "Books Payment"
+        text: root.books
+        on_text: root.books = self.text
