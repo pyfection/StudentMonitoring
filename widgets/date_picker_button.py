@@ -9,6 +9,7 @@ Builder.load_file('widgets/date_picker_button.kv')
 
 
 class DatePickerButton(MDRoundFlatIconButton):
+    date = StringProperty()
     format = StringProperty('%d-%m-%Y')
 
     def __init__(self, **kwargs):
@@ -20,4 +21,4 @@ class DatePickerButton(MDRoundFlatIconButton):
         date_dialog.open()
 
     def on_save(self, instance, value, date_range):
-        self.text = value.strftime(self.format)
+        self.date = value.strftime("%Y-%m-%d")

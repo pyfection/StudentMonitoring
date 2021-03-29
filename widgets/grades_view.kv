@@ -6,7 +6,7 @@
     NativoToolbar:
         id: toolbar
         left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
-        right_action_items: [['link-variant', lambda x: print('Not implemented yet'), 'Link Word']]
+        right_action_items: [['content-save', lambda x: root.save(), "Save"]]
 
     ScrollView:
         MDBoxLayout:
@@ -15,3 +15,43 @@
             orientation: "vertical"
             size_hint_x: None
             width: 2000
+
+<GradesRow>:
+    padding: (10, 10, 10, 10)
+    spacing: 10
+    adaptive_height: True
+
+    MDLabel:
+        id: name
+        text: root.name
+
+    DatePickerButton:
+        id: date
+        format: '%b-%Y'
+        date: root.date
+        on_date: root.date = self.date
+
+    MDTextField:
+        id: gtype
+        hint_text: "Type"
+        text: root.gtype
+        on_text: root.gtype = self.text
+
+    MDTextField:
+        id: math
+        hint_text: "Math"
+        text: root.math
+        on_text: root.math = self.text
+
+    MDTextField:
+        id: english
+        hint_text: "English"
+        text: root.english
+        on_text: root.english = self.text
+
+    MDTextField:
+        id: hindi
+        hint_text: "Hindi"
+        text: root.hindi
+        on_text: root.hindi = self.text
+

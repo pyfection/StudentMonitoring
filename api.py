@@ -132,5 +132,24 @@ class API:
         ws.clear()
         ws.insert_rows(attendance)
 
+    def upsert_grades(self, data):
+        grades = {
+            (grade['student_id'], grade['date']): (grade['gtype'], grade['math'], grade['english'], grade['hindi'])
+            for grade in self.grades()
+        }
+        data = {
+            (grade['student_id'], grade['date']): (grade['gtype'], grade['math'], grade['english'], grade['hindi'])
+            for grade in data
+        }
+        grades.update(data)
+        grades = [
+            [student_id, date, gtype, math, english, hindi]
+            for (student_id, date), (gtype, math, english, hindi) in grades.items()
+            if date and gtype and math and english and hindi
+        ]
+        ws = self.sh.worksheet("Grades")
+        ws.clear()
+        ws.insert_rows(grades)
+
 
 api = API()
