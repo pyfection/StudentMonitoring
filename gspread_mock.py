@@ -1,7 +1,25 @@
 
 
+PATHS = {
+    'Students': 'mock_files/students.csv',
+    'Teachers': 'mock_files/teachers.csv',
+    'Attendance': 'mock_files/attendance.csv',
+    'Grades': 'mock_files/grades.csv',
+    'Fees': 'mock_files/fees.csv',
+    'Holidays': 'mock_files/holidays.csv',
+}
+
+
 class Worksheet:
     records = []
+
+    def __init__(self, name):
+        self.name = name
+        self.reload()
+
+    def reload(self):
+        with open(PATHS[self.name]) as f:
+            self.records = [line.split(';') for line in f.read().split('\n')]
 
     def get_all_values(self):
         return self.records
@@ -12,6 +30,11 @@ class Worksheet:
     def append_row(self, data):
         self.records.append(data)
 
+    def insert_rows(self, rows, row=1):
+        self.records = self.records[:row-1] + rows + self.records[row-1:]
+        with open(PATHS[self.name], 'w') as f:
+            f.write('\n'.join(';'.join(row) for row in self.records))
+
     def row_values(self, row):
         return self.records[row]
 
@@ -19,22 +42,15 @@ class Worksheet:
     def row_count(self):
         return len(self.records)
 
+    def clear(self):
+        self.records.clear()
+        with open(PATHS[self.name], 'w') as f:
+            pass  # Clear
+
 
 class Sheet:
     def worksheet(self, name):
-        ws = Worksheet()
-        if name == 'Students':
-            ws.records = students
-        elif name == 'Teachers':
-            ws.records = teachers
-        elif name == 'Attendance':
-            ws.records = attendance
-        elif name == 'Grades':
-            ws.records = grades
-        elif name == 'Fees':
-            ws.records = fees
-        elif name == 'Holidays':
-            ws.records = holidays
+        ws = Worksheet(name)
         return ws
 
 
@@ -45,22 +61,3 @@ class Client:
 
 def authorize(credentials):
     return Client()
-
-
-with open('mock_files/students.csv') as f:
-    students = [line.split(';') for line in f.read().split('\n')]
-
-with open('mock_files/teachers.csv') as f:
-    teachers = [line.split(';') for line in f.read().split('\n')]
-
-with open('mock_files/attendance.csv') as f:
-    attendance = [line.split(';') for line in f.read().split('\n')]
-
-with open('mock_files/grades.csv') as f:
-    grades = [line.split(';') for line in f.read().split('\n')]
-
-with open('mock_files/fees.csv') as f:
-    fees = [line.split(';') for line in f.read().split('\n')]
-
-with open('mock_files/holidays.csv') as f:
-    holidays = [line.split(';') for line in f.read().split('\n')]

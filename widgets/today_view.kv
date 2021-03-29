@@ -8,6 +8,7 @@
     NativoToolbar:
         id: toolbar
         left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
+        right_action_items: [['content-save', lambda x: root.save()]]
 
     ScrollView:
         MDBoxLayout:
@@ -19,8 +20,6 @@
 <Attendance>:
     adaptive_height: True
 
-    on_state: print('on state')
-
     MDLabel:
         text: root.student_name
 
@@ -30,6 +29,8 @@
         group: root.group
         state: 'down' if root.state == 'present' else 'normal'
         background_down: settings.PRESENT_COLOR
+        md_bg_color: settings.PRESENT_COLOR if root.state == 'present' else self.background_normal
+        on_state: root.state = 'present'
 
     MDFillRoundToggleButton:
         text: "absent"
@@ -37,6 +38,8 @@
         group: root.group
         state: 'down' if root.state == 'absent' else 'normal'
         background_down: settings.ABSENT_COLOR
+        md_bg_color: settings.ABSENT_COLOR if root.state == 'absent' else self.background_normal
+        on_state: root.state = 'absent'
 
     MDFillRoundToggleButton:
         text: "late"
@@ -44,6 +47,8 @@
         group: root.group
         state: 'down' if root.state == 'late' else 'normal'
         background_down: settings.LATE_COLOR
+        md_bg_color: settings.LATE_COLOR if root.state == 'late' else self.background_normal
+        on_state: root.state = 'late'
 
 
 <AttendanceContent>:

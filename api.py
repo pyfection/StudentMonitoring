@@ -123,5 +123,14 @@ class API:
         ws = self.sh.worksheet("Students")
         ws.append_row([str(uuid4())] + data)
 
+    def upsert_attendance(self, data):
+        attendance = {(att['student_id'], att['date']): att['status'] for att in self.attendance()}
+        data = {(att['student_id'], att['date']): att['status'] for att in data}
+        attendance.update(data)
+        attendance = [[student_id, date, status] for (student_id, date), status in attendance.items() if status]
+        ws = self.sh.worksheet("Attendance")
+        ws.clear()
+        ws.insert_rows(attendance)
+
 
 api = API()
