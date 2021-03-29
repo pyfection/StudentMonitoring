@@ -10,6 +10,7 @@ from api import api
 
 class StudentContent(MDBoxLayout):
     student_name = StringProperty()
+    student_gender = StringProperty()
     joining_date = StringProperty()
     group = StringProperty()
     name_father = StringProperty()
