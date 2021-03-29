@@ -115,7 +115,6 @@ class MonitoringApp(App):
 
 
 Factory.register('AuthView', module='main')
-# Factory.register('TeacherView', module='widgets.teacher_view')
 Factory.register('TodayView', module='widgets.today_view')
 Factory.register('StudentsView', module='widgets.students_view')
 Factory.register('GradesView', module='widgets.grades_view')
