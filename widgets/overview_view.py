@@ -25,6 +25,21 @@ class OverviewTab(MDBoxLayout, MDTabsBase):
     holidays = DictProperty()
 
     def on_students(self, inst, students):
+        # General headers
+        data = [
+            {'text': "ID", 'width': 800},
+            {'text': "Name", 'width': 600},
+            {'text': "Attendance Days", 'width': 500},
+            {'text': "Math", 'width': 200},
+            {'text': "English", 'width': 200},
+            {'text': "Hindi", 'width': 200},
+            {'text': "Fees Amount", 'width': 180},
+            {'text': "Fees Date", 'width': 180},
+            {'text': "Fees Receipt", 'width': 180},
+            {'text': "Fees Books", 'width': 180},
+        ]
+
+        # Days headers
         holidays = set(
             d
             for y, m, d in [tuple(map(int, hd.split('-'))) for hd in self.holidays.keys()]
@@ -48,20 +63,21 @@ class OverviewTab(MDBoxLayout, MDTabsBase):
                 bg_color = settings.HOLIDAY_COLOR
             else:
                 school_days += 1
-            self.grid.add_widget(GridLabel(text=day, size_hint_x=None, width=80, bg_color=bg_color))
+            data.append({'text': day, 'bg_color': bg_color, 'width': 80})
 
+        # Student rows
         for id_, student in students.items():
             days_present = len([a for a in student.values() if a in ("present", "late")])
-            self.grid.add_widget(GridLabel(text=id_))
-            self.grid.add_widget(GridLabel(text=student['name']))
-            self.grid.add_widget(GridLabel(text=f'{days_present}/{school_days}/{days}'))
-            self.grid.add_widget(GridLabel(text=student.get('math', '')))
-            self.grid.add_widget(GridLabel(text=student.get('english', '')))
-            self.grid.add_widget(GridLabel(text=student.get('hindi', '')))
-            self.grid.add_widget(GridLabel(text=student.get('amount', '')))
-            self.grid.add_widget(GridLabel(text=student.get('date', '')))
-            self.grid.add_widget(GridLabel(text=student.get('receipt', '')))
-            self.grid.add_widget(GridLabel(text=student.get('books', '')))
+            data.append({'text': id_, 'width': 800})
+            data.append({'text': student['name'], 'width': 600})
+            data.append({'text': f'{days_present}/{school_days}/{days}', 'width': 500})
+            data.append({'text': student.get('math', ''), 'width': 200})
+            data.append({'text': student.get('english', ''), 'width': 200})
+            data.append({'text': student.get('hindi', ''), 'width': 200})
+            data.append({'text': student.get('amount', ''), 'width': 180})
+            data.append({'text': student.get('date', ''), 'width': 180})
+            data.append({'text': student.get('receipt', ''), 'width': 180})
+            data.append({'text': student.get('books', ''), 'width': 180})
             for i in range(1, 31 + 1):
                 if i <= days:
                     weekday = datetime(year=self.year, month=self.month, day=i).weekday()
@@ -82,7 +98,12 @@ class OverviewTab(MDBoxLayout, MDTabsBase):
                 elif att == 'late':
                     att = 'L'
                     bg_color = settings.LATE_COLOR
-                self.grid.add_widget(AdvancedLabel(text=att, bg_color=bg_color))
+                attrs = {'text': att, 'width': 80}
+                if bg_color:
+                    attrs['bg_color'] = bg_color
+                data.append(attrs)
+
+        self.grid.data = data
 
 
 class OverviewView(MDBoxLayout):
