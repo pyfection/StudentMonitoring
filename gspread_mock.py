@@ -6,6 +6,8 @@ PATHS = {
     'Attendance': 'mock_files/attendance.csv',
     'Grades': 'mock_files/grades.csv',
     'Fees': 'mock_files/fees.csv',
+    'MonthPlans': 'mock_files/month_plans.csv',
+    'RangePlans': 'mock_files/range_plans.csv',
     'Holidays': 'mock_files/holidays.csv',
 }
 

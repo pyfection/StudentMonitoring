@@ -108,14 +108,20 @@ class API:
         } for grade in grades]
 
     def range_plans(self):
-        # ToDo: to be implemented
         ws = self.sh.worksheet("RangePlans")
         range_plans = ws.get_all_values()
+        return {
+            (plan[0], plan[1], plan[2]): plan[3]
+            for plan in range_plans
+        }
 
     def month_plans(self):
-        # ToDo: to be implemented
         ws = self.sh.worksheet("MonthPlans")
         month_plans = ws.get_all_values()
+        return {
+            (plan[0], plan[1]): plan[2]
+            for plan in month_plans
+        }
 
     def add_student(self, *data):
         data = list(data)
@@ -170,5 +176,30 @@ class API:
         ws.clear()
         ws.insert_rows(fees)
 
+    def upsert_plan(self, data):
+        month_plans = self.month_plans()
+        range_plans = self.range_plans()
+
+        month_plans.update(data['months'])
+        range_plans.update(data['ranges'])
+
+        month_plans = [
+            [date, subj, text]
+            for (date, subj), text in month_plans.items()
+            if text
+        ]
+        range_plans = [
+            [start, end, subj, text]
+            for (start, end, subj), text in range_plans.items()
+            if text
+        ]
+
+        ws = self.sh.worksheet("MonthPlans")
+        ws.clear()
+        ws.insert_rows(month_plans)
+
+        ws = self.sh.worksheet("RangePlans")
+        ws.clear()
+        ws.insert_rows(range_plans)
 
 api = API()

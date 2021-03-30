@@ -7,6 +7,8 @@ from kivymd.uix.textfield import MDTextField, MDTextFieldRect
 from kivymd.uix.label import MDLabel
 from kivymd.uix.picker import MDDatePicker
 
+from api import api
+
 
 Builder.load_file('widgets/plan_view.kv')
 
@@ -40,7 +42,7 @@ class RangeRow(MDBoxLayout):
     start = StringProperty()
     end = StringProperty()
     data = DictProperty()
-    descs = {}
+    descs = DictProperty()
 
     def on_data(self, inst, data):
         for subject, desc in self.descs.items():
@@ -69,11 +71,13 @@ class PlanView(MDBoxLayout):
     def on_data(self, inst, data):
         for month, mdata in data['months'].items():
             self.add_month(month, mdata)
+        for (start, end), mdata in data['ranges'].items():
+            self.add_range(start, end, mdata)
 
     def show_date_picker(self, month):
         year, month = map(int, month.split('-'))
         date_dialog = MDDatePicker(year=year, month=month, mode="range")
-        date_dialog.bind(on_save=self.add_date_range)
+        date_dialog.bind(on_save=lambda inst, value, date_range: self.add_date_range(*date_range))
         date_dialog.open()
 
     def add_subject(self, subject):
@@ -87,13 +91,12 @@ class PlanView(MDBoxLayout):
             row.add_subject(subject)
         self.ids.subjects.width = sum(c.width for c in self.ids.subjects.children)
 
-    def add_date_range(self, instance, value, date_range):
-        start = date_range[0].isoformat()
-        end = date_range[-1].isoformat()
+    def add_range(self, start, end, data=None):
         row = RangeRow(start=start, end=end)
         for subject in self.subjects:
             row.add_subject(subject)
-        row.data = self.data['ranges']
+        if data:
+            row.data = data
         for i, row_ in enumerate(reversed(self.rows.children)):
             try:
                 smaller = start < row_.month
@@ -122,38 +125,43 @@ class PlanView(MDBoxLayout):
         self.add_month(month_str)
         self.data['months'][month_str] = {}
 
-    def update_data(self):
+    def save(self):
         data = {'months': {}, 'ranges': {}}
 
         for row in self.rows.children:
-            if isinstance(row, MonthRow):
-                row_data = {}
-                data['months'][row.month] = row_data
-            elif isinstance(row, RangeRow):
-                row_data = {}
-                data['ranges'][row.start] = row_data
-            else:
-                raise TypeError("row needs to be of type MonthRow or RangeRow")
-
             for subject, desc in row.descs.items():
-                row_data[subject] = desc
+                if isinstance(row, MonthRow):
+                    data['months'][(row.month, subject)] = desc.text
+                elif isinstance(row, RangeRow):
+                    data['ranges'][(row.start, row.end, subject)] = desc.text
+                else:
+                    raise TypeError("row needs to be of type MonthRow or RangeRow")
+
+        api.upsert_plan(data)
 
     def reload(self):
-        self.subjects = ["Math", "English", "Hindi", "Arts"]
+        subjects = ["Math", "English", "Hindi"]
+
+        months = {}
+        for (month, subject), desc in api.month_plans().items():
+            if subject not in subjects:
+                subjects.append(subject)
+            try:
+                months[month][subject] = desc
+            except KeyError:
+                months[month] = {subject: desc}
+
+        ranges = {}
+        for (start, end, subject), desc in api.range_plans().items():
+            if subject not in subjects:
+                subjects.append(subject)
+            try:
+                ranges[(start, end)][subject] = desc
+            except KeyError:
+                ranges[(start, end)] = {subject: desc}
+
+        self.subjects = list(subjects)
         self.data = {
-            'months': {
-                '2021-03': {
-                    "Math": "Test data math",
-                    "Arts": "Test data arts",
-                },
-                '2021-04': {
-                    "English": "Test data english",
-                    "Arts": "Test data arts",
-                },
-            },
-            'ranges': {
-                ('2021-03-01', '2021-03-05'): {
-                    "Math": "Exact math subject"
-                }
-            }
+            'months': months,
+            'ranges': ranges
         }

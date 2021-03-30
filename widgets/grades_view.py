@@ -3,11 +3,8 @@ from datetime import datetime
 from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.label import MDLabel
-from kivymd.uix.textfield import MDTextField
 
 from api import api
-from widgets.date_picker_button import DatePickerButton
 
 
 class GradesRow(MDBoxLayout):

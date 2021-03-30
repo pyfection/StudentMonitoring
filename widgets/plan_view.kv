@@ -11,7 +11,7 @@
     NativoToolbar:
         id: toolbar
         left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
-        right_action_items: [['table-column-plus-after', lambda x: root.subjects.append(''), "Add Subject"], ['table-row-plus-after', lambda x: root.new_month(), "Add Month"], ['content-save', lambda x: root.update_data(), "Save"]]
+        right_action_items: [['table-column-plus-after', lambda x: root.subjects.append(''), "Add Subject"], ['table-row-plus-after', lambda x: root.new_month(), "Add Month"], ['content-save', lambda x: root.save(), "Save"]]
 
     ScrollView:
         MDBoxLayout:
