@@ -2,11 +2,12 @@ from datetime import datetime, timedelta
 
 from kivy.properties import StringProperty
 from kivy.lang.builder import Builder
+from kivy.clock import Clock
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
+from kivymd.uix.snackbar import Snackbar
 
 from api import api
-import settings
 
 
 class Attendance(MDBoxLayout):
@@ -27,6 +28,31 @@ class TodayView(MDBoxLayout):
         super().__init__(**kwargs)
 
     def reload(self):
+        try:
+            students = api.students()
+        except Exception as e:
+            Snackbar(
+                text=f"You seem to be offline, trying again in 10 seconds.",
+                snackbar_x="10dp",
+                snackbar_y="10dp",
+                size_hint_x=.5
+            ).open()
+            print(str(e))
+            Clock.schedule_once(lambda *args: self.reload(), 10)
+            return
+        try:
+            attendance = api.attendance()
+        except Exception as e:
+            Snackbar(
+                text=f"You seem to be offline, trying again in 10 seconds.",
+                snackbar_x="10dp",
+                snackbar_y="10dp",
+                size_hint_x=.5
+            ).open()
+            print(str(e))
+            Clock.schedule_once(lambda *args: self.reload(), 10)
+            return
+
         self.attendance.clear_widgets()
 
         self.today_att = AttendanceContent()
@@ -46,9 +72,6 @@ class TodayView(MDBoxLayout):
             )
         )
         self.attendance.add_widget(std)
-
-        students = api.students()
-        attendance = api.attendance()
 
         today = datetime.today()
         today_ = today.strftime('%Y-%m-%d')
@@ -83,4 +106,12 @@ class TodayView(MDBoxLayout):
             data.append({'student_id': att.student_id, 'date': att.date, 'status': att.state})
         for att in self.yesterday_att.children:
             data.append({'student_id': att.student_id, 'date': att.date, 'status': att.state})
-        api.upsert_attendance(data)
+        try:
+            api.upsert_attendance(data)
+        except Exception as e:
+            Snackbar(
+                text=f"Attendance could not be saved because of: {str(e)}\nTrying again soon.",
+                snackbar_x="10dp",
+                snackbar_y="10dp",
+                size_hint_x=.5
+            ).open()

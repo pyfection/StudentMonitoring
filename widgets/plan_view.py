@@ -118,22 +118,25 @@ class PlanView(MDBoxLayout):
         self.rows.add_widget(row)
 
     def new_month(self):
-        latest = max(self.data['months'].keys())
-        year, month = map(int, latest.split('-'))
-        latest_month = date(year, month+1, 1)
+        if self.data['months']:
+            latest = max(self.data['months'].keys())
+            year, month = map(int, latest.split('-'))
+            latest_month = date(year, month+1, 1)
+        else:  # Doesn't have any months set yet
+            latest_month = date.today()
         month_str = latest_month.strftime('%Y-%m')
         self.add_month(month_str)
         self.data['months'][month_str] = {}
 
     def save(self):
-        data = {'months': {}, 'ranges': {}}
+        data = {'months': [], 'ranges': []}
 
         for row in self.rows.children:
             for subject, desc in row.descs.items():
                 if isinstance(row, MonthRow):
-                    data['months'][(row.month, subject)] = desc.text
+                    data['months'].append({'date': row.month, 'subj': subject, 'text': desc.text})
                 elif isinstance(row, RangeRow):
-                    data['ranges'][(row.start, row.end, subject)] = desc.text
+                    data['ranges'].append({'start': row.start, 'end': row.end, 'subj': subject, 'text': desc.text})
                 else:
                     raise TypeError("row needs to be of type MonthRow or RangeRow")
 
@@ -143,22 +146,22 @@ class PlanView(MDBoxLayout):
         subjects = ["Math", "English", "Hindi"]
 
         months = {}
-        for (month, subject), desc in api.month_plans().items():
-            if subject not in subjects:
-                subjects.append(subject)
+        for plan in api.month_plans():
+            if plan['subj'] not in subjects:
+                subjects.append(plan['subj'])
             try:
-                months[month][subject] = desc
+                months[plan['date']][plan['subj']] = plan['text']
             except KeyError:
-                months[month] = {subject: desc}
+                months[plan['date']] = {plan['subj']: plan['text']}
 
         ranges = {}
-        for (start, end, subject), desc in api.range_plans().items():
-            if subject not in subjects:
-                subjects.append(subject)
+        for plan in api.range_plans():
+            if plan['subj'] not in subjects:
+                subjects.append(plan['subj'])
             try:
-                ranges[(start, end)][subject] = desc
+                ranges[(plan['start'], plan['end'])][plan['subj']] = plan['text']
             except KeyError:
-                ranges[(start, end)] = {subject: desc}
+                ranges[(plan['start'], plan['end'])] = {plan['subj']: plan['text']}
 
         self.subjects = list(subjects)
         self.data = {

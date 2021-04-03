@@ -1,4 +1,4 @@
-from pprint import pprint
+import os
 import re
 from datetime import datetime
 import json
@@ -81,20 +81,30 @@ class MonitoringApp(App):
 
     def on_start(self):
         Clock.schedule_once(lambda *args: self.on_ready(), 4)  # ToDo: make sure this gets executed after everything is loaded
+        Clock.schedule_interval(lambda *args: api.sync(), 60)
 
     def on_ready(self):
-        with open('session.json') as f:
-            session = json.load(f)
+        path = 'session.json'
+        if os.path.exists(path):
+            with open(path) as f:
+                session = json.load(f)
 
-        self.check_authenticate(
-            session.get('key'), session.get('email'), session.get('first_name'), session.get('last_name')
-        )
+            success = api.auth(
+                session.get('key'), session.get('email'), session.get('first_name'), session.get('last_name')
+            )
+            if success:
+                print("Successfully Authenticated")
+            else:
+                print("Couldn't Authenticated, starting offline mode")
+            self.manager.current = 'today'
+        else:
+            self.manager.current = 'auth'
 
     def check_authenticate(self, key, email, first_name, last_name):
         print('authorize')
         if not api.auth(key, email, first_name, last_name):
             print("Couldn't authenticate")
-            self.root.current = 'auth'
+            self.manager.current = 'auth'
             return False
         print("Successful authenticated")
         self.manager.current = 'today'
