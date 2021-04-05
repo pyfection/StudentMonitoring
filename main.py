@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 import json
 from uuid import uuid4
+from threading import Thread
 
 from kivymd.app import MDApp as App
 from kivy.core.window import Window
@@ -88,10 +89,16 @@ class MonitoringApp(App):
         self.manager = self.root.manager
 
     def on_start(self):
-        Clock.schedule_once(lambda *args: self.on_ready(), 4)  # ToDo: make sure this gets executed after everything is loaded
+        # Clock.schedule_once(lambda *args: self.on_ready(), 4)
+        thread = Thread(target=self.on_ready)
+        print('thread starting')
+        thread.start()
+        print('thread started')
         Clock.schedule_interval(lambda *args: api.sync(), 60)
 
     def on_ready(self):
+        def change_screen(name):
+            self.manager.current = name
         path = 'session.json'
         if os.path.exists(path):
             with open(path) as f:
@@ -104,9 +111,10 @@ class MonitoringApp(App):
                 print("Successfully Authenticated")
             else:
                 print("Couldn't Authenticated, starting offline mode")
-            self.manager.current = 'today'
+            current = 'today'
         else:
-            self.manager.current = 'auth'
+            current = 'auth'
+        Clock.schedule_once(lambda dt, current=current: change_screen(current))
 
     def check_authenticate(self, key, email, first_name, last_name):
         print('authorize')
