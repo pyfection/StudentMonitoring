@@ -13,7 +13,7 @@ from api import api
 Builder.load_file('widgets/plan_view.kv')
 
 
-PROTECTED_SUBJECTS = ["Math", "English", "Hindi"]
+DEFAULT_SUBJECTS = ["Math", "English", "Hindi"]
 
 
 class SubjectDesc(MDTextFieldRect):
@@ -23,17 +23,16 @@ class SubjectDesc(MDTextFieldRect):
 class MonthRow(MDBoxLayout):
     initial = True
     month = StringProperty()
-    data = DictProperty()
-    descs = {}
+    data = ListProperty()
+    descs = ListProperty()
 
     def on_data(self, inst, data):
-        for subject, desc in self.descs.items():
-            desc.text = data.get(subject, '')
+        for i, desc in enumerate(self.descs):
+            desc.text = data[i]
 
-    def add_subject(self, subject):
+    def add_subject(self):
         sj = SubjectDesc()
-        self.descs[subject] = sj
-        # sj.bind(text=lambda inst, text: self.)
+        self.descs.append(sj)
         self.add_widget(sj)
 
 
@@ -41,17 +40,16 @@ class RangeRow(MDBoxLayout):
     initial = True
     start = StringProperty()
     end = StringProperty()
-    data = DictProperty()
-    descs = DictProperty()
+    data = ListProperty()
+    descs = ListProperty()
 
     def on_data(self, inst, data):
-        for subject, desc in self.descs.items():
-            desc.text = data.get(subject, '')
+        for i, desc in enumerate(self.descs):
+            desc.text = data[i]
 
-    def add_subject(self, subject):
+    def add_subject(self):
         sj = SubjectDesc()
-        self.descs[subject] = sj
-        # sj.bind(text=lambda inst, text: self.)
+        self.descs.append(sj)
         self.add_widget(sj)
 
 
@@ -81,22 +79,23 @@ class PlanView(MDBoxLayout):
         date_dialog.open()
 
     def add_subject(self, subject):
-        if subject in PROTECTED_SUBJECTS:
+        if subject in DEFAULT_SUBJECTS:
             wg = MDLabel(size_hint_x=None, width=400, text=subject, halign='center', bold=True)
         else:
             wg = MDTextField(size_hint_x=None, width=400, text=subject)
 
         self.ids.subjects.add_widget(wg)
         for row in self.rows.children:
-            row.add_subject(subject)
+            row.add_subject()
         self.ids.subjects.width = sum(c.width for c in self.ids.subjects.children)
 
     def add_range(self, start, end, data=None):
         row = RangeRow(start=start, end=end)
-        for subject in self.subjects:
-            row.add_subject(subject)
-        if data:
-            row.data = data
+        for subject in self.ids.subjects.children[:-1]:
+            row.add_subject()
+        if not data:
+            data = {}
+        row.data = [data.get(s, '') for s in self.subjects]
         for i, row_ in enumerate(reversed(self.rows.children)):
             try:
                 smaller = start < row_.month
@@ -111,10 +110,11 @@ class PlanView(MDBoxLayout):
     def add_month(self, month, mdata=None):
         row = MonthRow(month=month)
         row.add.bind(on_press=lambda inst, month=month: self.show_date_picker(month))
-        for subject in self.subjects:
-            row.add_subject(subject)
-        if mdata:
-            row.data = mdata
+        for subject in self.ids.subjects.children[:-1]:
+            row.add_subject()
+        if not mdata:
+            mdata = {}
+        row.data = [mdata.get(s, '') for s in self.subjects]
         self.rows.add_widget(row)
 
     def new_month(self):
@@ -132,7 +132,8 @@ class PlanView(MDBoxLayout):
         data = {'months': [], 'ranges': []}
 
         for row in self.rows.children:
-            for subject, desc in row.descs.items():
+            for i, subject in enumerate(self.subjects):
+                desc = row.descs[i]
                 if isinstance(row, MonthRow):
                     data['months'].append({'date': row.month, 'subj': subject, 'text': desc.text})
                 elif isinstance(row, RangeRow):
@@ -143,7 +144,7 @@ class PlanView(MDBoxLayout):
         api.upsert_plan(data)
 
     def reload(self):
-        subjects = ["Math", "English", "Hindi"]
+        subjects = DEFAULT_SUBJECTS.copy()
 
         months = {}
         for plan in api.month_plans():
@@ -163,7 +164,7 @@ class PlanView(MDBoxLayout):
             except KeyError:
                 ranges[(plan['start'], plan['end'])] = {plan['subj']: plan['text']}
 
-        self.subjects = list(subjects)
+        self.subjects = subjects
         self.data = {
             'months': months,
             'ranges': ranges
