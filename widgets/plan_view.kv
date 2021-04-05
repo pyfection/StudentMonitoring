@@ -28,7 +28,7 @@
 
                 Widget:
                     size_hint_x: None
-                    width: 280
+                    width: 400
 
             MDBoxLayout:
                 id: rows
@@ -45,23 +45,11 @@
         id: add
         pos_hint: {'center_x': .5, 'center_y': .5}
         size_hint_x: None
-        width: 280
+        width: 500
         divider: None
         text: f"{calendar.month_name[int(root.month.split('-')[1])]}\n{root.month.split('-')[0]}"
         IconLeftWidget:
             icon: "calendar-today"
-#    MDLabel:
-#        size_hint_x: None
-#        width: 200
-#        text: f"{calendar.month_name[int(root.month.split('-')[1])]}\n{root.month.split('-')[0]}"
-#
-#    MDRaisedButton:
-#        id: add
-#        size_hint_y: 1
-#        size_hint_x: None
-#        width: 50
-#        text: "+"
-
 
 <RangeRow>:
     size_hint_y: None
@@ -70,7 +58,7 @@
     MDLabel:
         halign: "center"
         size_hint_x: None
-        width: 280
+        width: 500
         text: '\n'.join((date.fromisoformat(root.start).strftime(settings.date_format), date.fromisoformat(root.end).strftime(settings.date_format)))
 
 

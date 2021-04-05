@@ -91,9 +91,7 @@ class MonitoringApp(App):
     def on_start(self):
         # Clock.schedule_once(lambda *args: self.on_ready(), 4)
         thread = Thread(target=self.on_ready)
-        print('thread starting')
         thread.start()
-        print('thread started')
         Clock.schedule_interval(lambda *args: api.sync(), 60)
 
     def on_ready(self):

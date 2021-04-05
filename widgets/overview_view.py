@@ -63,7 +63,7 @@ class OverviewTab(MDBoxLayout, MDTabsBase):
                 bg_color = settings.HOLIDAY_COLOR
             else:
                 school_days += 1
-            data.append({'text': day, 'bg_color': bg_color, 'width': 80})
+            data.append({'text': day, 'bg_color': bg_color, 'width': 90})
 
         # Student rows
         for id_, student in students.items():
@@ -98,7 +98,7 @@ class OverviewTab(MDBoxLayout, MDTabsBase):
                 elif att == 'late':
                     att = 'L'
                     bg_color = settings.LATE_COLOR
-                attrs = {'text': att, 'width': 80}
+                attrs = {'text': att, 'width': 90}
                 if bg_color:
                     attrs['bg_color'] = bg_color
                 data.append(attrs)

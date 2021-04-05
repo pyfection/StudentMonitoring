@@ -14,6 +14,8 @@ class DatePickerButton(MDRoundFlatIconButton):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.size_hint_x = None
+        self.width = 400
 
     def show_date_picker(self):
         date_dialog = MDDatePicker()
