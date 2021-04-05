@@ -5,12 +5,16 @@ import json
 from uuid import uuid4
 
 from kivymd.app import MDApp as App
+from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.list import MDList
 
 from api import api
+
+
+Window.softinput_mode = 'pan'
 
 
 class AuthView(BoxLayout):
