@@ -142,6 +142,7 @@ Screen:
                         height: sum(c.height for c in self.children)
 
                         name: name
+                        gender: gender
                         date_of_joining: date_of_joining
                         group: group
                         name_father: name_father
@@ -161,6 +162,11 @@ Screen:
                         MDTextField:
                             id: name
                             hint_text: "Name"
+                            write_tab: False
+
+                        MDTextField:
+                            id: gender
+                            hint_text: "Gender"
                             write_tab: False
 
                         MDTextField:

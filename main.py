@@ -2,6 +2,7 @@ import os
 import re
 from datetime import datetime
 import json
+from uuid import uuid4
 
 from kivymd.app import MDApp as App
 from kivy.clock import Clock
@@ -49,27 +50,30 @@ class NewChildView(MDList):
 
     def submit(self):
         # ToDo: add validation checks
-        data = [
-            self.name.text,
-            self.date_of_joining.text,
-            self.group.text,
-            self.name_father.text,
-            self.name_mother.text,
-            self.address.text,
-            self.phone_mother.text,
-            self.phone_father.text,
-            self.dob.text,
-            self.aadhar.text,
-            self.official_class.text,
-            str(int(self.goes_government_school_yes.state == "down")),
-            self.occupation_mother.text,
-            self.occupation_father.text,
-            'active',
-            self.comment.text,
-        ]
+        data = {
+            "id": str(uuid4()),
+            "student_name": self.name.text,
+            "student_gender": self.gender.text,
+            'joining_date': self.date_of_joining.text,
+            "group": self.group.text,
+            "name_father": self.name_father.text,
+            "name_mother": self.name_mother.text,
+            "address": self.address.text,
+            "phone_number_mother": self.phone_mother.text,
+            "phone_number_father": self.phone_father.text,
+            "dob": self.dob.text,
+            "aadhar_card_number": self.aadhar.text,
+            "official_class": self.official_class.text,
+            "goes_goverment_school": str(int(self.goes_government_school_yes.state == "down")),
+            "occupation_mother": self.occupation_mother.text,
+            "occupation_father": self.occupation_father.text,
+            "status": 'active',
+            "teacher": api.teacher,
+            "comment": self.comment.text,
+        }
         app = App.get_running_app()
-        app.root.current = 'teacher'
-        app.root.ids.teacher_view.add_child(data)
+        app.manager.current = 'students'
+        api.add_student(**data)
 
 
 class MonitoringApp(App):

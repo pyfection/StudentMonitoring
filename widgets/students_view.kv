@@ -6,7 +6,7 @@
     NativoToolbar:
         id: toolbar
         left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
-        right_action_items: [['account-plus', lambda x: app.manager.switch_to(app.manager.get_screen('add_child')), 'Add Student']]
+        right_action_items: [['account-plus', lambda x: root.add_child(), 'Add Student']]
 
     ScrollView:
         MDBoxLayout:

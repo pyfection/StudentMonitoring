@@ -34,6 +34,9 @@ class StudentsView(MDBoxLayout):
         Builder.load_file('widgets/students_view.kv')
         super().__init__(**kwargs)
 
+    def add_child(self):
+        App.get_running_app().manager.current = 'add_child'
+
     def reload(self):
         self.student_list.clear_widgets()
 
