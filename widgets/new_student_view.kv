@@ -1,0 +1,132 @@
+<NewStudentView>:
+    id: new_child_view
+
+    name: name
+    gender: gender
+    date_of_joining: date_of_joining
+    group: group
+    name_father: name_father
+    name_mother: name_mother
+    address: address
+    phone_mother: phone_mother
+    phone_father: phone_father
+    dob: dob
+    aadhar: aadhar
+    official_class: official_class
+    goes_government_school_yes: goes_government_school_yes
+    goes_government_school_no: goes_government_school_no
+    occupation_mother: occupation_mother
+    occupation_father: occupation_father
+    comment: comment
+
+    MDList:
+        size_hint_y: None
+        height: sum(c.height for c in self.children)
+
+        MDTextField:
+            id: name
+            hint_text: "Name"
+            write_tab: False
+
+        MDTextField:
+            id: gender
+            hint_text: "Gender"
+            write_tab: False
+
+        MDTextField:
+            id: date_of_joining
+            hint_text: "Date of joining (DD-MM-YYYY)"
+            write_tab: False
+
+        MDTextField:
+            id: group
+            hint_text: "Group"
+            write_tab: False
+
+        MDTextField:
+            id: name_father
+            hint_text: "Father's name"
+            write_tab: False
+
+        MDTextField:
+            id: name_mother
+            hint_text: "Mother's name"
+            write_tab: False
+
+        MDTextField:
+            id: address
+            hint_text: "Address"
+            write_tab: False
+
+        MDTextField:
+            id: phone_mother
+            hint_text: "Phone number (Mother)"
+            write_tab: False
+
+        MDTextField:
+            id: phone_father
+            hint_text: "Phone number (Father)"
+            write_tab: False
+
+        MDTextField:
+            id: dob
+            hint_text: "Date of birth (DD-MM-YYYY)"
+            write_tab: False
+
+        MDTextField:
+            id: aadhar
+            hint_text: "Aadhar Card number"
+            write_tab: False
+
+        MDTextField:
+            id: official_class
+            hint_text: "Official Class"
+            write_tab: False
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: 80
+
+            MDLabel:
+                text: "Goes to government school:"
+
+            ToggleButton:
+                id: goes_government_school_yes
+                size_hint_x: None
+                width: 100
+                text: "Yes"
+                group: "government_school"
+                state: "down"
+
+            ToggleButton:
+                id: goes_government_school_no
+                size_hint_x: None
+                width: 100
+                text: "No"
+                group: "government_school"
+
+        MDTextField:
+            id: occupation_mother
+            hint_text: "Mother' main occupation"
+            write_tab: False
+
+        MDTextField:
+            id: occupation_father
+            hint_text: "Father' main occupation"
+            write_tab: False
+
+        MDTextField:
+            id: comment
+            write_tab: False
+            multiline: True
+            hint_text: "Comment"
+
+        Widget:
+
+        MDFillRoundFlatIconButton:
+            icon: "plus"
+            size_hint_x: 1
+            size_hint_y: None
+            height: 80
+            text: "Add"
+            on_press: root.submit()
