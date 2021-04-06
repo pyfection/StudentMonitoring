@@ -336,7 +336,7 @@ class API:
         local_range_plans = {(plan['start'], plan['end'], plan['subj']): plan for plan in local_range_plans}
         online_range_plans = self.sh.worksheet("RangePlans").get_all_values()
         online_range_plans = {
-            (plan[0], plan[1]): {
+            (plan[0], plan[1], plan[2]): {
                 "start": plan[0],
                 "end": plan[1],
                 "subj": plan[2],

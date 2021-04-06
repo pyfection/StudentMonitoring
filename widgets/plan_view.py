@@ -75,7 +75,7 @@ class PlanView(MDBoxLayout):
     def show_date_picker(self, month):
         year, month = map(int, month.split('-'))
         date_dialog = MDDatePicker(year=year, month=month, mode="range")
-        date_dialog.bind(on_save=lambda inst, value, date_range: self.add_date_range(*date_range))
+        date_dialog.bind(on_save=lambda inst, value, date_range: self.add_range(date_range[0].isoformat(), date_range[-1].isoformat()))
         date_dialog.open()
 
     def add_subject(self, subject):
