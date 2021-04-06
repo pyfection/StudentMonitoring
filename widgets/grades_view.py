@@ -60,3 +60,4 @@ class GradesView(MDBoxLayout):
                 'math': row.math, 'english': row.english, 'hindi': row.hindi
             })
         api.upsert_grades(data)
+        api.sync_grades()

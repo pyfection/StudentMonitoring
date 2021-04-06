@@ -142,6 +142,7 @@ class PlanView(MDBoxLayout):
                     raise TypeError("row needs to be of type MonthRow or RangeRow")
 
         api.upsert_plan(data)
+        api.sync_plans()
 
     def reload(self):
         subjects = DEFAULT_SUBJECTS.copy()

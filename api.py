@@ -136,7 +136,7 @@ class API:
         grades = [
             {'student_id': student_id, 'date': date, 'gtype': gtype, 'math': math, 'english': english, 'hindi': hindi}
             for (student_id, date), (gtype, math, english, hindi) in grades.items()
-            if date and gtype and math and english and hindi
+            if date and gtype
         ]
         with open('local/grades.json', 'w') as f:
             json.dump(grades, f)
@@ -177,7 +177,7 @@ class API:
         with open('local/range_plans.json', 'w') as f:
             json.dump(range_plans, f)
 
-    def sync(self):
+    def sync_students(self):
         # Students
         local_students = self.students()
         local_students = {student['id']: student for student in local_students}
@@ -233,6 +233,7 @@ class API:
         ws.clear()
         ws.insert_rows(data)
 
+    def sync_attendance(self):
         # Attendance
         local_attendance = self.attendance()
         local_attendance = {(attendance['student_id'], attendance['date']): attendance for attendance in local_attendance}
@@ -256,6 +257,7 @@ class API:
         ws.clear()
         ws.insert_rows(data)
 
+    def sync_fees(self):
         # Fees
         local_fees = self.fees()
         local_fees = {(fee['student_id'], fee['date']): fee for fee in local_fees}
@@ -281,6 +283,7 @@ class API:
         ws.clear()
         ws.insert_rows(data)
 
+    def sync_grades(self):
         # Grades
         local_grades = self.grades()
         local_grades = {(grade['student_id'], grade['date']): grade for grade in local_grades}
@@ -310,6 +313,7 @@ class API:
         ws.clear()
         ws.insert_rows(data)
 
+    def sync_plans(self):
         # Plans
         local_month_plans = self.month_plans()
         local_month_plans = {(plan['date'], plan['subj']): plan for plan in local_month_plans}

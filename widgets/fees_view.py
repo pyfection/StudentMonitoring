@@ -61,3 +61,4 @@ class FeesView(MDBoxLayout):
                 'amount': row.amount, 'receipt': row.receipt, 'books': row.books
             })
         api.upsert_fees(data)
+        api.sync_fees()

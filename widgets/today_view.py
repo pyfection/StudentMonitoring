@@ -108,6 +108,7 @@ class TodayView(MDBoxLayout):
             data.append({'student_id': att.student_id, 'date': att.date, 'status': att.state})
         try:
             api.upsert_attendance(data)
+            api.sync_attendance()
         except Exception as e:
             Snackbar(
                 text=f"Attendance could not be saved because of: {str(e)}\nTrying again soon.",

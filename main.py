@@ -79,6 +79,7 @@ class NewChildView(MDList):
         app = App.get_running_app()
         app.manager.current = 'students'
         api.add_student(**data)
+        api.sync_students()
 
 
 class MonitoringApp(App):
@@ -89,10 +90,9 @@ class MonitoringApp(App):
         self.manager = self.root.manager
 
     def on_start(self):
-        # Clock.schedule_once(lambda *args: self.on_ready(), 4)
         thread = Thread(target=self.on_ready)
         thread.start()
-        Clock.schedule_interval(lambda *args: api.sync(), 60)
+        # Clock.schedule_interval(lambda *args: api.sync(), 60)
 
     def on_ready(self):
         def change_screen(name):
