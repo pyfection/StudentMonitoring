@@ -1,0 +1,45 @@
+<DetailList>:
+    Screen:
+        name: 'list'
+
+        RecycleView:
+            id: list
+            viewclass: 'OneLineIconListItem'
+
+            RecycleGridLayout:
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+
+    Screen:
+        name: 'detail'
+
+        MDBoxLayout:
+            orientation: 'vertical'
+
+            OneLineIconListItem:
+                text: detail.title
+
+                IconLeftWidget:
+                    icon: "arrow-left"
+                    on_press: root.current = 'list'
+
+            RecycleView:
+                id: detail
+                title: ''
+                viewclass: 'DetailItem'
+
+                RecycleGridLayout:
+                    cols: 1
+                    size_hint_y: None
+                    height: self.minimum_height
+
+
+<DetailItem>:
+    MDLabel:
+        text: root.header
+        size_hint: 1, 1
+
+    MDLabel:
+        text: root.value
+        size_hint: 1, 1
