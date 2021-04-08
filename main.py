@@ -89,6 +89,7 @@ Factory.register('FeesView', module='widgets.fees_view')
 Factory.register('PlanView', module='widgets.plan_view')
 Factory.register('OverviewView', module='widgets.overview_view')
 Factory.register('MDFillRoundToggleButton', module='widgets.md_toggle_button')
+Factory.register('DataTable', module='widgets.data_table')
 
 
 if __name__ == '__main__':
