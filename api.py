@@ -6,15 +6,15 @@ import gspread
 from gspread.exceptions import APIError
 from google.oauth2.service_account import Credentials
 from google.auth.exceptions import TransportError
+from requests.exceptions import ConnectionError
 
 
 def checks(func):
     def _check(api, callback, *args, **kwargs):
         if not api.key:
-            with open('session.json') as f:
-                api.key = json.load(f).get('key', '')
+            return False
 
-        if api.key and not api.gc:
+        if not api.gc:
             scopes = [
                 'https://www.googleapis.com/auth/spreadsheets',
                 'https://www.googleapis.com/auth/drive'
@@ -25,10 +25,13 @@ def checks(func):
             )
             api.gc = gspread.authorize(credentials)
 
-        if api.key and not api.sh:
+        if not api.sh:
             api.set_sheet(api.key)
 
-        result = func(api, *args, **kwargs)
+        try:
+            result = func(api, *args, **kwargs)
+        except (ConnectionError, APIError):
+            result = False
         if callback:
             callback(result)
         return result
@@ -51,6 +54,12 @@ class API:
     def set_sheet(self, key):
         self.key = key
         self.sh = self.gc.open_by_key(key)
+        with open('session.json') as f:
+            session = json.load(f)
+        if key != session.get('key', ''):
+            with open('session.json', 'w') as f:
+                session['key'] = key
+                json.dump(session, f, indent=2)
 
     def holidays(self):
         try:
@@ -200,7 +209,7 @@ class API:
         # Students
         local_students = self.students()
         local_students = {student['id']: student for student in local_students}
-        online_students = self.get_values(sheet="Students", threading=False)
+        online_students = self.get_values(sheet="Students", threading=False) or []
         online_students = {
             student[0]: {
                 "id": student[0],
@@ -224,7 +233,6 @@ class API:
             } for student in online_students}
 
         if online_students != local_students:
-            print('new students info, updating')
             new_students = {**online_students, **local_students}
             self.upsert_students(list(new_students.values()))
             data = [
@@ -255,7 +263,7 @@ class API:
         # Attendance
         local_attendance = self.attendance()
         local_attendance = {(attendance['student_id'], attendance['date']): attendance for attendance in local_attendance}
-        online_attendance = self.get_values(sheet="Attendance", threading=False)
+        online_attendance = self.get_values(sheet="Attendance", threading=False) or []
         online_attendance = {
             (attendance[0], attendance[1]): {
                 "student_id": attendance[0],
@@ -279,7 +287,7 @@ class API:
         # Fees
         local_fees = self.fees()
         local_fees = {(fee['student_id'], fee['date']): fee for fee in local_fees}
-        online_fees = self.get_values(sheet="Fees", threading=False)
+        online_fees = self.get_values(sheet="Fees", threading=False) or []
         online_fees = {
             (fee[0], fee[1]): {
                 "student_id": fee[0],
@@ -307,7 +315,7 @@ class API:
         # Grades
         local_grades = self.grades()
         local_grades = {(grade['student_id'], grade['date']): grade for grade in local_grades}
-        online_grades = self.get_values(sheet="Grades", threading=False)
+        online_grades = self.get_values(sheet="Grades", threading=False) or []
         online_grades = {
             (grade[0], grade[1]): {
                 "student_id": grade[0],
@@ -337,7 +345,7 @@ class API:
         # Plans
         local_month_plans = self.month_plans()
         local_month_plans = {(plan['date'], plan['subj']): plan for plan in local_month_plans}
-        online_month_plans = self.get_values(sheet="MonthPlans", threading=False)
+        online_month_plans = self.get_values(sheet="MonthPlans", threading=False) or []
         online_month_plans = {
             (plan[0], plan[1]): {
                 "date": plan[0],
@@ -357,7 +365,7 @@ class API:
 
         local_range_plans = self.range_plans()
         local_range_plans = {(plan['start'], plan['end'], plan['subj']): plan for plan in local_range_plans}
-        online_range_plans = self.get_values(sheet="RangePlans", threading=False)
+        online_range_plans = self.get_values(sheet="RangePlans", threading=False) or []
         online_range_plans = {
             (plan[0], plan[1], plan[2]): {
                 "start": plan[0],
@@ -381,3 +389,9 @@ class API:
 
 
 api = API()
+try:
+    with open('session.json') as f:
+        api.key = json.load(f).get('key', '')
+except FileNotFoundError:
+    with open('session.json', 'w') as f:
+        json.dump({}, f)

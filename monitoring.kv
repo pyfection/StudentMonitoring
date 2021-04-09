@@ -1,6 +1,7 @@
 #:import date datetime.date
 #:import timedelta datetime.timedelta
 #:import Animation kivy.animation.Animation
+#:import api api.api
 
 Screen:
     manager: manager
@@ -109,6 +110,8 @@ Screen:
                 MDTextField:
                     id: key
                     hint_text: "Key"
+                    text: api.key
+                    on_focus: if not self.focus: api.key = self.text; app.sync_all(clear=True)
 
                 ScrollView:
                     MDList:

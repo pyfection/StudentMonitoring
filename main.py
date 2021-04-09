@@ -22,13 +22,18 @@ class MonitoringApp(App):
         self.manager = self.root.manager
 
     def on_start(self):
-        thread = Thread(target=self.on_ready)
+        thread = Thread(target=self.sync_all)
         thread.start()
         # Clock.schedule_interval(lambda *args: api.sync(), 60)
 
-    def on_ready(self):
+    def sync_all(self, clear=False):
         def change_screen(name):
             self.manager.current = name
+
+        if clear:
+            for filename in os.listdir('local'):
+                file_path = os.path.join('local', filename)
+                os.unlink(file_path)
 
         print("Syncing Students")
         api.sync_students(threading=False)
