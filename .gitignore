@@ -44,3 +44,4 @@ credentials.json
 session.json
 mock_files/
 buildozer/
+local/
