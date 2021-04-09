@@ -57,7 +57,6 @@ class NewStudentView(ScrollView):
             "occupation_mother": self.occupation_mother.text,
             "occupation_father": self.occupation_father.text,
             "status": 'active',
-            "teacher": api.teacher,
             "comment": self.comment.text,
         }
         app = App.get_running_app()

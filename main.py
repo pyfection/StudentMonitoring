@@ -14,16 +14,6 @@ from api import api
 Window.softinput_mode = 'pan'
 
 
-class AuthView(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        try:
-            with open('session.json') as f:
-                self.session = json.load(f)
-        except FileNotFoundError:
-            self.session = {}
-
-
 class MonitoringApp(App):
     def build(self):
         self.icon = 'icon.png'
@@ -39,48 +29,21 @@ class MonitoringApp(App):
     def on_ready(self):
         def change_screen(name):
             self.manager.current = name
-        path = 'session.json'
-        if os.path.exists(path):
-            with open(path) as f:
-                session = json.load(f)
 
-            success = api.auth(
-                session.get('key'), session.get('email'), session.get('first_name'), session.get('last_name')
-            )
-            if success:
-                print("Successfully Authenticated")
-            else:
-                print("Couldn't Authenticated, starting offline mode")
-            current = 'today'
-        else:
-            current = 'auth'
-        Clock.schedule_once(lambda dt, current=current: change_screen(current))
-
-    def check_authenticate(self, key, email, first_name, last_name):
-        print('authorize')
-        if not api.auth(key, email, first_name, last_name):
-            print("Couldn't authenticate")
-            self.manager.current = 'auth'
-            return False
-        print("Successful authenticated")
-        self.manager.current = 'today'
-        # self.root.ids.teacher_view.load_students()
-
-        with open('session.json', 'w') as f:
-            json.dump(
-                {
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "email": email,
-                    "key": key,
-                },
-                f, indent=4
-            )
-
-        return True
+        print("Syncing Students")
+        api.sync_students(threading=False)
+        print("Syncing Attendance")
+        api.sync_attendance(threading=False)
+        print("Syncing Fees")
+        api.sync_fees(threading=False)
+        print("Syncing Grades")
+        api.sync_grades(threading=False)
+        print("Syncing Plans")
+        api.sync_plans(threading=False)
+        print("Everything synced!")
+        Clock.schedule_once(lambda dt: change_screen('today'))
 
 
-Factory.register('AuthView', module='main')
 Factory.register('TodayView', module='widgets.today_view')
 Factory.register('StudentsView', module='widgets.students_view')
 Factory.register('NewStudentView', module='widgets.new_student_view')

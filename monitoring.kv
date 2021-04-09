@@ -35,55 +35,6 @@ Screen:
                             valign: 'middle'
 
             Screen:
-                name: "auth"
-                AuthView:
-                    private_key: private_key
-                    first_name: first_name
-                    last_name: last_name
-                    email: email
-
-                    id: auth_view
-                    orientation: "vertical"
-                    BoxLayout:
-                        TextInput:
-                            id: first_name
-                            write_tab: False
-                            hint_text: "First Name"
-                            text: self.parent.parent.session.get('first_name')
-                            multiline: False
-                        TextInput:
-                            id: last_name
-                            write_tab: False
-                            hint_text: "Last Name"
-                            text: self.parent.parent.session.get('last_name')
-                            multiline: False
-                    TextInput:
-                        id: email
-                        write_tab: False
-                        hint_text: "Email"
-                        text: self.parent.session.get('email')
-                        multiline: False
-                    TextInput:
-                        id: private_key
-                        write_tab: False
-                        hint_text: "Private Key"
-                    BoxLayout:
-                        ToggleButton:
-                            id: teacher_button
-                            text: "Teacher"
-                            group: "account_type"
-                            state: "down"
-                        ToggleButton:
-                            id: admin_button
-                            text: "Admin"
-                            group: "account_type"
-                            disabled: True  # ToDo: remove once teacher view exists
-                    Button:
-                        text: "Authenticate"
-        #                disabled: not (first_name.text and last_name.text and email.text and private_key.text)
-                        on_press: app.check_authenticate(private_key.text, email.text, first_name.text, last_name.text)
-
-            Screen:
                 name: "today"
                 on_pre_enter: today_view.reload()
 
@@ -155,8 +106,11 @@ Screen:
                         id: avatar
                         source: "Greenworld_Logo_Coloured.png"
 
-                ScrollView:
+                MDTextField:
+                    id: key
+                    hint_text: "Key"
 
+                ScrollView:
                     MDList:
                         TwoLineIconListItem:
                             text: "Today"

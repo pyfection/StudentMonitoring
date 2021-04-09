@@ -17,7 +17,7 @@ class StudentsView(MDBoxLayout):
                 "ID", "Name of student", "Gender of student", 'Date of joining', "gr #", "Father's name",
                 "Mother's name", "Address", "Phone number (Mother)", "Phone number (Father)", "Date of birth",
                 "Aadhar Card number", "Official Class", "Goes to goverment school", "Mother' main occupation",
-                "Father' main occupation", "Status", "Teacher", "Comment"
+                "Father' main occupation", "Status", "Comment"
             ]
         )
         Clock.schedule_once(lambda dt: self.add_widget(self.detail_list))
@@ -49,7 +49,6 @@ class StudentsView(MDBoxLayout):
                     student["occupation_mother"],
                     student["occupation_father"],
                     student["status"],
-                    student["teacher"],
                     student["comment"],
                 )
             ) for student in students
