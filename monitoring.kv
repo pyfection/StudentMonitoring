@@ -49,6 +49,7 @@ Screen:
 
                 StudentsView:
                     nav_drawer: nav_drawer
+                    student_detail_view: student_detail_view
                     id: students_view
 
             Screen:
@@ -85,10 +86,11 @@ Screen:
 
 
             Screen:
-                name: "add_child"
+                name: "student_detail"
 
-                NewStudentView:
-                    id: new_student_view
+                StudentDetailView:
+                    nav_drawer: nav_drawer
+                    id: student_detail_view
 
         MDNavigationDrawer:
             id: nav_drawer

@@ -4,15 +4,15 @@ from datetime import datetime
 
 from kivymd.app import MDApp as App
 from kivy.lang.builder import Builder
-from kivy.uix.scrollview import ScrollView
+from kivymd.uix.boxlayout import BoxLayout
 
 from api import api
 
 
-Builder.load_file('widgets/new_student_view.kv')
+Builder.load_file('widgets/student_detail_view.kv')
 
 
-class NewStudentView(ScrollView):
+class StudentDetailView(BoxLayout):
     # @staticmethod
     # def correct_date_format(inst):
     #     for i in (4, 7, 10):
@@ -37,10 +37,31 @@ class NewStudentView(ScrollView):
             return False
         return True
 
+    def reload(self, uid=''):
+        student = next((s for s in api.students() if s['id'] == uid), {})
+        self.student_id.text = uid
+        self.name.text = student.get("student_name", '')
+        self.gender.text = student.get("student_gender", '')
+        self.date_of_joining.text = student.get('joining_date', '')
+        self.group.text = student.get("group", '')
+        self.name_father.text = student.get("name_father", '')
+        self.name_mother.text = student.get("name_mother", '')
+        self.address.text = student.get("address", '')
+        self.phone_mother.text = student.get("phone_number_mother", '')
+        self.phone_father.text = student.get("phone_number_father", '')
+        self.dob.text = student.get("dob", '')
+        self.aadhar.text = student.get("aadhar_card_number", '')
+        self.official_class.text = student.get("official_class", '')
+        self.goes_government_school_yes.state = "down" if student.get("goes_goverment_school", '0') == '1' else "normal"
+        self.occupation_mother.text = student.get("occupation_mother", '')
+        self.occupation_father.text = student.get("occupation_father", '')
+        self.comment.text = student.get("comment", '')
+
     def submit(self):
         # ToDo: add validation checks
+        uid = self.student_id.text
         data = {
-            "id": str(uuid4()),
+            "id": uid or str(uuid4()),
             "student_name": self.name.text,
             "student_gender": self.gender.text,
             'joining_date': self.date_of_joining.text,
@@ -60,6 +81,10 @@ class NewStudentView(ScrollView):
             "comment": self.comment.text,
         }
         app = App.get_running_app()
-        app.manager.current = 'students'
-        api.add_student(**data)
+        if uid:
+            api.upsert_students([data])
+        else:
+            api.add_student(**data)
         api.sync_students()
+        app.manager.current = 'students'
+

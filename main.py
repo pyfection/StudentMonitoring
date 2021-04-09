@@ -45,7 +45,7 @@ class MonitoringApp(App):
 
 Factory.register('TodayView', module='widgets.today_view')
 Factory.register('StudentsView', module='widgets.students_view')
-Factory.register('NewStudentView', module='widgets.new_student_view')
+Factory.register('StudentDetailView', module='widgets.student_detail_view')
 Factory.register('GradesView', module='widgets.grades_view')
 Factory.register('FeesView', module='widgets.fees_view')
 Factory.register('PlanView', module='widgets.plan_view')

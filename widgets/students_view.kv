@@ -6,4 +6,13 @@
         id: toolbar
         title: "Students"
         left_action_items: [['menu', lambda x: root.nav_drawer.set_state("open")]]
-        right_action_items: [['account-plus', lambda x: root.add_child(), 'Add Student']]
+        right_action_items: [['account-plus', lambda x: root.new_student(), 'Add Student']]
+
+    RecycleView:
+        id: list
+        viewclass: 'OneLineIconListItem'
+
+        RecycleGridLayout:
+            cols: 1
+            size_hint_y: None
+            height: self.minimum_height

@@ -1,14 +1,15 @@
 
 from kivy.app import App
+from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.lang.builder import Builder
-from kivymd.uix.boxlayout import MDBoxLayout
+from kivy.uix.boxlayout import BoxLayout
 
 from api import api
 from widgets.detail_list import DetailList
 
 
-class StudentsView(MDBoxLayout):
+class StudentsView(BoxLayout):
     def __init__(self, **kwargs):
         Builder.load_file('widgets/students_view.kv')
         super().__init__(**kwargs)
@@ -22,34 +23,22 @@ class StudentsView(MDBoxLayout):
         )
         Clock.schedule_once(lambda dt: self.add_widget(self.detail_list))
 
-    def add_child(self):
-        App.get_running_app().manager.current = 'add_child'
+    def new_student(self):
+        App.get_running_app().manager.current = 'student_detail'
+
+    def show_detail(self, uid):
+        app = App.get_running_app()
+        app.manager.current = 'student_detail'
+        self.student_detail_view.reload(uid)
 
     def reload(self):
         students = api.students()
 
-        self.detail_list.data = [
-            (
-                (student['id'], student['student_name']),
-                (
-                    student["id"],
-                    student["student_name"],
-                    student["student_gender"],
-                    student['joining_date'],
-                    student["group"],
-                    student["name_father"],
-                    student["name_mother"],
-                    student["address"],
-                    student["phone_number_mother"],
-                    student["phone_number_father"],
-                    student["dob"],
-                    student["aadhar_card_number"],
-                    student["official_class"],
-                    student["goes_goverment_school"],
-                    student["occupation_mother"],
-                    student["occupation_father"],
-                    student["status"],
-                    student["comment"],
-                )
-            ) for student in students
+        self.ids.list.data = [
+            {
+                'text': student['student_name'],
+                'size_hint': (1, None),
+                'height': dp(50),
+                'on_press': lambda uid=student['id']: self.show_detail(uid)
+            } for student in students
         ]
