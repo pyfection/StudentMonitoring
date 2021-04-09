@@ -1,17 +1,15 @@
 import os
-import json
 from threading import Thread
 
 from kivymd.app import MDApp as App
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.factory import Factory
-from kivy.uix.boxlayout import BoxLayout
 
 from api import api
 
 
-Window.softinput_mode = 'pan'
+Window.softinput_mode = 'below_target'
 
 
 class MonitoringApp(App):
@@ -35,16 +33,12 @@ class MonitoringApp(App):
                 file_path = os.path.join('local', filename)
                 os.unlink(file_path)
 
-        print("Syncing Students")
-        api.sync_students(threading=False)
-        print("Syncing Attendance")
-        api.sync_attendance(threading=False)
-        print("Syncing Fees")
-        api.sync_fees(threading=False)
-        print("Syncing Grades")
-        api.sync_grades(threading=False)
-        print("Syncing Plans")
-        api.sync_plans(threading=False)
+        print("Syncing...")
+        for sync in (api.sync_students, api.sync_attendance, api.sync_fees, api.sync_grades, api.sync_plans):
+            success = sync(threading=False)
+            if success is False:
+                print("Couldn't synchronize, starting offline mode")
+                break
         print("Everything synced!")
         Clock.schedule_once(lambda dt: change_screen('today'))
 

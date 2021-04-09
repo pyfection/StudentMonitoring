@@ -1,3 +1,4 @@
+import os
 from uuid import uuid4
 import json
 from threading import Thread
@@ -12,6 +13,7 @@ from requests.exceptions import ConnectionError
 def checks(func):
     def _check(api, callback, *args, **kwargs):
         if not api.key:
+            print("No API Key")
             return False
 
         if not api.gc:
@@ -26,11 +28,12 @@ def checks(func):
             api.gc = gspread.authorize(credentials)
 
         if not api.sh:
-            api.set_sheet(api.key)
+            api.set_sheet()
 
         try:
             result = func(api, *args, **kwargs)
-        except (ConnectionError, APIError):
+        except (ConnectionError, APIError) as e:
+            print(str(e))
             result = False
         if callback:
             callback(result)
@@ -51,14 +54,17 @@ class API:
     sh = None
     key = ''
 
-    def set_sheet(self, key):
+    def set_key(self, key):
         self.key = key
-        self.sh = self.gc.open_by_key(key)
+        self.sh = None
+
+    def set_sheet(self):
+        self.sh = self.gc.open_by_key(self.key)
         with open('session.json') as f:
             session = json.load(f)
-        if key != session.get('key', ''):
+        if self.key != session.get('key', ''):
             with open('session.json', 'w') as f:
-                session['key'] = key
+                session['key'] = self.key
                 json.dump(session, f, indent=2)
 
     def holidays(self):
@@ -395,3 +401,6 @@ try:
 except FileNotFoundError:
     with open('session.json', 'w') as f:
         json.dump({}, f)
+
+if not os.path.exists('local'):
+    os.makedirs('local')
