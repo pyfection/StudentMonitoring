@@ -21,7 +21,7 @@ class FeesRow(MDBoxLayout):
 
 class FeesView(MDBoxLayout):
     def __init__(self, **kwargs):
-        Builder.load_file('widgets/fees_view.kv')
+        Builder.load_file('views/fees_view.kv')
         super().__init__(**kwargs)
 
     def reload(self):

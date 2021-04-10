@@ -10,7 +10,7 @@ from kivymd.uix.picker import MDDatePicker
 from api import api
 
 
-Builder.load_file('widgets/plan_view.kv')
+Builder.load_file('views/plan_view.kv')
 
 
 DEFAULT_SUBJECTS = ["Math", "English", "Hindi"]

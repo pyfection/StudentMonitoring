@@ -24,7 +24,7 @@ class AttendanceContent(MDBoxLayout):
 
 class TodayView(MDBoxLayout):
     def __init__(self, **kwargs):
-        Builder.load_file('widgets/today_view.kv')
+        Builder.load_file('views/today_view.kv')
         super().__init__(**kwargs)
 
     def reload(self):

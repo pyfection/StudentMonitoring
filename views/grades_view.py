@@ -19,7 +19,7 @@ class GradesRow(MDBoxLayout):
 
 class GradesView(MDBoxLayout):
     def __init__(self, **kwargs):
-        Builder.load_file('widgets/grades_view.kv')
+        Builder.load_file('views/grades_view.kv')
         super().__init__(**kwargs)
 
     def reload(self):

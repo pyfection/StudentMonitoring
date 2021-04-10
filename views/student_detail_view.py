@@ -9,7 +9,7 @@ from kivymd.uix.boxlayout import BoxLayout
 from api import api
 
 
-Builder.load_file('widgets/student_detail_view.kv')
+Builder.load_file('views/student_detail_view.kv')
 
 
 class StudentDetailView(BoxLayout):

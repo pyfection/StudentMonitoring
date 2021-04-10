@@ -43,13 +43,13 @@ class MonitoringApp(App):
         Clock.schedule_once(lambda dt: change_screen('today'))
 
 
-Factory.register('TodayView', module='widgets.today_view')
-Factory.register('StudentsView', module='widgets.students_view')
-Factory.register('StudentDetailView', module='widgets.student_detail_view')
-Factory.register('GradesView', module='widgets.grades_view')
-Factory.register('FeesView', module='widgets.fees_view')
-Factory.register('PlanView', module='widgets.plan_view')
-Factory.register('OverviewView', module='widgets.overview_view')
+Factory.register('TodayView', module='views.today_view')
+Factory.register('StudentsView', module='views.students_view')
+Factory.register('StudentDetailView', module='views.student_detail_view')
+Factory.register('GradesView', module='views.grades_view')
+Factory.register('FeesView', module='views.fees_view')
+Factory.register('PlanView', module='views.plan_view')
+Factory.register('OverviewView', module='views.overview_view')
 Factory.register('MDFillRoundToggleButton', module='widgets.md_toggle_button')
 Factory.register('DataTable', module='widgets.data_table')
 

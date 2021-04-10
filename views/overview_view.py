@@ -11,7 +11,7 @@ from api import api
 import settings
 from widgets.advanced_label import AdvancedLabel
 
-Builder.load_file('widgets/overview_view.kv')
+Builder.load_file('views/overview_view.kv')
 
 
 class GridLabel(MDLabel):

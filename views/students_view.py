@@ -11,7 +11,7 @@ from widgets.detail_list import DetailList
 
 class StudentsView(BoxLayout):
     def __init__(self, **kwargs):
-        Builder.load_file('widgets/students_view.kv')
+        Builder.load_file('views/students_view.kv')
         super().__init__(**kwargs)
         self.detail_list = DetailList(
             headers=[
