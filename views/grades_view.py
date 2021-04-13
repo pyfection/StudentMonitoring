@@ -3,6 +3,7 @@ from datetime import datetime
 from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.menu import MDDropdownMenu
 
 from api import api
 
@@ -15,6 +16,39 @@ class GradesRow(MDBoxLayout):
     math = StringProperty()
     english = StringProperty()
     hindi = StringProperty()
+    key_map = {"monthly": "Monthly", "mid_term": "Mid-Term", "final": "Final"}
+
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        menu_items = [
+            {
+                "text": "Monthly",
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x="monthly": self.menu_callback(self.key_map[x], x),
+            },
+            {
+                "text": "Mid-Term",
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x="mid_term": self.menu_callback(self.key_map[x], x),
+            },
+            {
+                "text": "Final",
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x="final": self.menu_callback(self.key_map[x], x),
+            },
+        ]
+        self.gtype_menu = MDDropdownMenu(
+            caller=self.ids.gtype,
+            items=menu_items,
+            width_mult=4,
+        )
+
+    def menu_callback(self, text, gtype):
+        self.ids.gtype.text = text
+        self.gtype = gtype
+        self.gtype_menu.dismiss()
 
 
 class GradesView(MDBoxLayout):
@@ -45,6 +79,7 @@ class GradesView(MDBoxLayout):
                     continue
                 row.date = dt.strftime('%Y-%m-%d')
                 row.gtype = grade['gtype']
+                row.ids.gtype.text = row.key_map.get(row.gtype, 'Grade Type')
                 row.math = grade['math']
                 row.english = grade['english']
                 row.hindi = grade['hindi']

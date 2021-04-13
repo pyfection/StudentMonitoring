@@ -32,25 +32,24 @@
         date: root.date
         on_date: root.date = self.date
 
-    MDTextField:
+    MDDropDownItem:
         id: gtype
-        hint_text: "Type"
-        text: root.gtype
-        on_text: root.gtype = self.text
+        text: "Grade Type"  #root.key_map.get(root.gtype, '')
+        on_release: root.gtype_menu.open()
 
-    MDTextField:
+    NumberInput:
         id: math
         hint_text: "Math"
         text: root.math
         on_text: root.math = self.text
 
-    MDTextField:
+    NumberInput:
         id: english
         hint_text: "English"
         text: root.english
         on_text: root.english = self.text
 
-    MDTextField:
+    NumberInput:
         id: hindi
         hint_text: "Hindi"
         text: root.hindi
