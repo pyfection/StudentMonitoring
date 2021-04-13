@@ -41,15 +41,17 @@ class StudentDetailView(BoxLayout):
         student = next((s for s in api.students() if s['id'] == uid), {})
         self.student_id.text = uid
         self.name.text = student.get("student_name", '')
-        self.gender.text = student.get("student_gender", '')
-        self.date_of_joining.text = student.get('joining_date', '')
+        gender = student.get("student_gender", '')
+        self.gender_m.state = "down" if gender == 'm' else "normal"
+        self.gender_f.state = "down" if gender == 'f' else "normal"
+        self.date_of_joining.date = student.get('joining_date', '')
         self.group.text = student.get("group", '')
         self.name_father.text = student.get("name_father", '')
         self.name_mother.text = student.get("name_mother", '')
         self.address.text = student.get("address", '')
         self.phone_mother.text = student.get("phone_number_mother", '')
         self.phone_father.text = student.get("phone_number_father", '')
-        self.dob.text = student.get("dob", '')
+        self.dob.date = student.get("dob", '')
         self.aadhar.text = student.get("aadhar_card_number", '')
         self.official_class.text = student.get("official_class", '')
         self.goes_government_school_yes.state = "down" if student.get("goes_goverment_school", '0') == '1' else "normal"
@@ -60,18 +62,23 @@ class StudentDetailView(BoxLayout):
     def submit(self):
         # ToDo: add validation checks
         uid = self.student_id.text
+        gender = ''
+        if self.gender_m.state == 'down':
+            gender = 'm'
+        elif self.gender_f.state == 'down':
+            gender = 'f'
         data = {
             "id": uid or str(uuid4()),
             "student_name": self.name.text,
-            "student_gender": self.gender.text,
-            'joining_date': self.date_of_joining.text,
+            "student_gender": gender,
+            'joining_date': self.date_of_joining.date,
             "group": self.group.text,
             "name_father": self.name_father.text,
             "name_mother": self.name_mother.text,
             "address": self.address.text,
             "phone_number_mother": self.phone_mother.text,
             "phone_number_father": self.phone_father.text,
-            "dob": self.dob.text,
+            "dob": self.dob.date,
             "aadhar_card_number": self.aadhar.text,
             "official_class": self.official_class.text,
             "goes_goverment_school": str(int(self.goes_government_school_yes.state == "down")),

@@ -2,8 +2,8 @@
 
 <DatePickerButton>:
     icon: "calendar"
-    text: 'MMM-YYYY'
+    text: 'Pick Date'
     size_hint: 1, 1
     pos_hint: {'center_x': .5, 'center_y': .5}
     on_release: self.show_date_picker()
-    on_date: self.text = date.fromisoformat(self.date).strftime(self.format)
+    on_date: self.text = date.fromisoformat(self.date).strftime(self.format) if self.date else 'Pick Date'

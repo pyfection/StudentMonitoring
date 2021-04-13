@@ -50,6 +50,7 @@ Factory.register('GradesView', module='views.grades_view')
 Factory.register('FeesView', module='views.fees_view')
 Factory.register('PlanView', module='views.plan_view')
 Factory.register('OverviewView', module='views.overview_view')
+Factory.register('NumberInput', module='widgets.number_input')
 Factory.register('MDFillRoundToggleButton', module='widgets.md_toggle_button')
 Factory.register('DataTable', module='widgets.data_table')
 

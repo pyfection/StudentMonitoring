@@ -2,7 +2,8 @@
     toolbar: toolbar
     student_id: student_id
     name: name
-    gender: gender
+    gender_m: gender_m
+    gender_f: gender_f
     date_of_joining: date_of_joining
     group: group
     name_father: name_father
@@ -27,27 +28,54 @@
         right_action_items: [['content-save', lambda x: root.submit(), 'Save Student']]
 
     ScrollView:
-        MDList:
+        GridLayout:
+            cols: 1
             size_hint_y: None
-            height: sum(c.height for c in self.children)
+            height: self.minimum_height
 
             MDLabel
                 id: student_id
+                size_hint_y: None
+                height: dp(50)
 
             MDTextField:
                 id: name
                 hint_text: "Name"
                 write_tab: False
 
-            MDTextField:
-                id: gender
-                hint_text: "Gender"
-                write_tab: False
+            BoxLayout:
+                size_hint_y: None
+                height: dp(50)
 
-            MDTextField:
-                id: date_of_joining
-                hint_text: "Date of joining (DD-MM-YYYY)"
-                write_tab: False
+                MDLabel:
+                    text: "Gender:"
+
+                MDFillRoundToggleButton:
+                    id: gender_m
+                    text: "Male"
+                    group: "gender"
+                    background_down: app.theme_cls.primary_color
+                    background_normal: (1, 1, 1, 0)
+                    md_bg_color: app.theme_cls.primary_color if self.state == 'down' else self.background_normal
+
+                MDFillRoundToggleButton:
+                    id: gender_f
+                    text: "Female"
+                    group: "gender"
+                    background_down: app.theme_cls.primary_color
+                    background_normal: (1, 1, 1, 0)
+                    md_bg_color: app.theme_cls.primary_color if self.state == 'down' else self.background_normal
+
+            BoxLayout:
+                size_hint_y: None
+                height: dp(50)
+
+                MDLabel:
+                    text: "Date of Joining:"
+
+                DatePickerButton:
+                    id: date_of_joining
+                    format: '%d-%m-%Y'
 
             MDTextField:
                 id: group
@@ -69,23 +97,32 @@
                 hint_text: "Address"
                 write_tab: False
 
-            MDTextField:
+            NumberInput:
                 id: phone_mother
+                max_len: 10
                 hint_text: "Phone number (Mother)"
                 write_tab: False
 
-            MDTextField:
+            NumberInput:
                 id: phone_father
+                max_len: 10
                 hint_text: "Phone number (Father)"
                 write_tab: False
 
-            MDTextField:
-                id: dob
-                hint_text: "Date of birth (DD-MM-YYYY)"
-                write_tab: False
+            BoxLayout:
+                size_hint_y: None
+                height: dp(50)
 
-            MDTextField:
+                MDLabel:
+                    text: "Date of Birth:"
+
+                DatePickerButton:
+                    id: dob
+                    format: '%d-%m-%Y'
+
+            NumberInput:
                 id: aadhar
+                max_len: 12
                 hint_text: "Aadhar Card number"
                 write_tab: False
 
@@ -101,20 +138,21 @@
                 MDLabel:
                     text: "Goes to government school:"
 
-                ToggleButton:
+                MDFillRoundToggleButton:
                     id: goes_government_school_yes
-                    size_hint_x: None
-                    width: 100
                     text: "Yes"
                     group: "government_school"
-                    state: "down"
+                    background_down: app.theme_cls.primary_color
+                    background_normal: (1, 1, 1, 0)
+                    md_bg_color: app.theme_cls.primary_color if self.state == 'down' else self.background_normal
 
-                ToggleButton:
+                MDFillRoundToggleButton:
                     id: goes_government_school_no
-                    size_hint_x: None
-                    width: 100
                     text: "No"
                     group: "government_school"
+                    background_down: app.theme_cls.primary_color
+                    background_normal: (1, 1, 1, 0)
+                    md_bg_color: app.theme_cls.primary_color if self.state == 'down' else self.background_normal
 
             MDTextField:
                 id: occupation_mother
