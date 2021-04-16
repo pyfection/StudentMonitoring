@@ -18,7 +18,9 @@ class NumberInput(MDTextField):
         self.helper_text = f"Needs to be between {self.min_text_length} and {self.max_text_length} numbers long"
 
     def on_text(self, *args):
-        if self.min_text_length <= len(self.text) <= self.max_text_length:
-            self.error = False
-        else:
+        if self.min_text_length > len(self.text):
             self.error = True
+        elif self.max_text_length and len(self.text) > self.max_text_length:
+            self.error = True
+        else:
+            self.error = False
