@@ -1,15 +1,24 @@
 
+from kivy.properties import NumericProperty
 from kivymd.uix.textfield import MDTextField
 
 
 class NumberInput(MDTextField):
-    max_len = 10
+    min_text_length = NumericProperty(0)
 
-    def insert_text(self, substring, from_undo=False):
-        try:
-            int(substring)
-        except ValueError:
-            return
-        if len(self.text) >= self.max_len:
-            return
-        return super().insert_text(substring, from_undo=from_undo)
+    def __init__(self, **kwargs):
+        self.helper_text_mode = "on_error"
+        self.helper_text = f"Needs to be between {self.min_text_length} and {self.max_text_length} numbers long"
+        super().__init__(**kwargs)
+
+    def on_min_text_length(self, *args):
+        self.helper_text = f"Needs to be between {self.min_text_length} and {self.max_text_length} numbers long"
+
+    def on_max_text_length(self, *args):
+        self.helper_text = f"Needs to be between {self.min_text_length} and {self.max_text_length} numbers long"
+
+    def on_text(self, *args):
+        if self.min_text_length <= len(self.text) <= self.max_text_length:
+            self.error = False
+        else:
+            self.error = True
