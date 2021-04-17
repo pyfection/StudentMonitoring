@@ -2,9 +2,11 @@
 #:import timedelta datetime.timedelta
 #:import Animation kivy.animation.Animation
 #:import api api.api
+#:import Clipboard kivy.core.clipboard.Clipboard
 
 Screen:
     manager: manager
+    error_report: error_report
 
     MDNavigationLayout:
 
@@ -34,6 +36,30 @@ Screen:
                             text_size: self.size
                             halign: 'center'
                             valign: 'middle'
+
+            Screen:
+                name: "error"
+                MDBoxLayout:
+                    orientation: "vertical"
+
+                    MDLabel:
+                        text: "An error has occurred. Please copy it and send it to your admin."
+                        size_hint_y: None
+                        height:  dp(50)
+                        bold: True
+
+                    ScrollView:
+                        MDTextField:
+                            id: error_report
+                            multiline: True
+
+                    MDRoundFlatIconButton:
+                        text: "Copy to clipboard"
+                        icon: "content-copy"
+                        pos_hint: {'center_x': .5, 'center_y': .5}
+                        size_hint: 1, None
+                        height:  dp(50)
+                        on_release: Clipboard.copy(error_report.text)
 
             Screen:
                 name: "today"

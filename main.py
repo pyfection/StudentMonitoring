@@ -1,7 +1,9 @@
 import os
 from threading import Thread
+import traceback
 
 from kivymd.app import MDApp as App
+from kivy.base import ExceptionHandler, ExceptionManager
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.factory import Factory
@@ -55,6 +57,19 @@ Factory.register('MDFillRoundToggleButton', module='widgets.md_toggle_button')
 Factory.register('DataTable', module='widgets.data_table')
 
 
+class E(ExceptionHandler):
+    def __init__(self, app, *args, **kwargs):
+        self.app = app
+        super().__init__(*args, **kwargs)
+
+    def handle_exception(self, inst):
+        tb = traceback.format_exc()
+        self.app.manager.current = 'error'
+        self.app.root.error_report.text = tb
+        return ExceptionManager.PASS
+
+
 if __name__ == '__main__':
     app = MonitoringApp()
+    ExceptionManager.add_handler(E(app))
     app.run()
