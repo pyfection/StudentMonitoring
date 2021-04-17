@@ -10,9 +10,11 @@
 
     RecycleView:
         id: list
+        size_hint_y: None
+        height: root.height - toolbar.height  # Refused to size correctly the normal way
         viewclass: 'OneLineIconListItem'
 
-        RecycleGridLayout:
-            cols: 1
+        RecycleBoxLayout:
             size_hint_y: None
             height: self.minimum_height
+            orientation: 'vertical'
