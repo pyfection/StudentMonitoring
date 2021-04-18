@@ -7,7 +7,7 @@ title = StudentMonitoring
 package.name = studentmonitoring
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.greenworld
 
 # (str) Source code where the main.py live
 source.dir = /home/matthias/Dev/Upwork/GreenworldStundentMonitoring
@@ -28,7 +28,7 @@ source.exclude_dirs = buildozer, local, mock_files, venv
 source.exclude_patterns = session.json
 
 # (str) Application versioning (method 1)
-version = 0.2
+version = 0.3
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

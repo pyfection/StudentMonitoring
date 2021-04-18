@@ -72,49 +72,49 @@ class API:
             with open('local/holidays.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def students(self):
         try:
             with open('local/students.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def attendance(self):
         try:
             with open('local/attendance.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def fees(self):
         try:
             with open('local/fees.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def grades(self):
         try:
             with open('local/grades.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def range_plans(self):
         try:
             with open('local/range_plans.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def month_plans(self):
         try:
             with open('local/month_plans.json', 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            return {}
+            return []
 
     def add_student(self, **data):
         students = self.students()
