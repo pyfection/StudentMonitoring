@@ -30,6 +30,7 @@ class FeesView(MDBoxLayout):
         students = api.students()
         fees = api.fees()
 
+        total_fees = 0
         today = datetime.today()
         for student in students:
             if student['status'] == 'inactive':
@@ -47,11 +48,13 @@ class FeesView(MDBoxLayout):
                     continue
                 row.date = dt.strftime('%Y-%m-%d')
                 row.amount = fee['amount']
+                total_fees += float(row.amount)
                 row.receipt = fee['receipt']
                 row.books = fee['books']
                 break
 
             self.fees_list.add_widget(row)
+        self.toolbar.title = f"Fees     [size=10]{total_fees} \u20B9[/size]"
 
     def save(self):
         data = []
