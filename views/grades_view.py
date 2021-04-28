@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from kivy.lang.builder import Builder
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, ObjectProperty
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.snackbar import Snackbar
 
 from api import api
 
@@ -11,7 +12,7 @@ from api import api
 class GradesRow(MDBoxLayout):
     student_id = StringProperty()
     name = StringProperty()
-    date = StringProperty()
+    date = ObjectProperty()
     gtype = StringProperty()
     math = StringProperty()
     english = StringProperty()
@@ -77,7 +78,7 @@ class GradesView(MDBoxLayout):
                 dt = datetime(*map(int, grade['date'].split('-')), 1)
                 if dt.year != today.year or dt.month != today.month:
                     continue
-                row.date = dt.strftime('%Y-%m-%d')
+                row.date = dt
                 row.gtype = grade['gtype']
                 row.ids.gtype.text = row.key_map.get(row.gtype, 'Grade Type')
                 row.math = grade['math']
@@ -90,9 +91,20 @@ class GradesView(MDBoxLayout):
     def save(self):
         data = []
         for row in self.grades_list.children:
+            if any((
+                row.ids.date.error,
+            )):
+                Snackbar(
+                    text="[b][color=#b52a2b]Errors while trying to save!![/color][/b]",
+                    snackbar_x="10dp",
+                    snackbar_y="10dp",
+                    size_hint_x=.7,
+                    bg_color=(1, .8, .8, 1),
+                ).open()
+                break
             data.append({
-                'student_id': row.student_id, 'date': row.date[:-3], 'gtype': row.gtype,
-                'math': row.math, 'english': row.english, 'hindi': row.hindi
+                'student_id': row.student_id, 'date': row.date.strftime("%Y-%m-%d") if row.date else None,
+                'gtype': row.gtype, 'math': row.math, 'english': row.english, 'hindi': row.hindi
             })
         api.upsert_grades(data)
         api.sync_grades()

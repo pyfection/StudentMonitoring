@@ -26,12 +26,10 @@
         id: name
         text: root.name
 
-    DatePickerButton:
+    DateInput:
         id: date
-        format: '%b-%Y'
         date: root.date
         on_date: root.date = self.date
-        min_year: 2015
 
     MDDropDownItem:
         id: gtype
