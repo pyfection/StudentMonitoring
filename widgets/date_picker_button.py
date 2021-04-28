@@ -14,7 +14,7 @@ class DatePickerButton(MDRoundFlatIconButton):
     format = StringProperty('%d-%m-%Y')
     date_dialog = MDDatePicker()
     min_year = NumericProperty(1914)
-    max_year = datetime.date.today().year
+    max_year = (datetime.date.today() + datetime.timedelta(days=365)).year
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
