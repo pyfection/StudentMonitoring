@@ -20,12 +20,19 @@ class DatePickerButton(MDRoundFlatIconButton):
         super().__init__(**kwargs)
         self.size_hint_x = None
         self.width = 400
-        self.date_dialog.bind(on_save=self.on_save)
 
     def show_date_picker(self):
         self.date_dialog.min_year = self.min_year
         self.date_dialog.max_year = self.max_year
+        self.date_dialog.bind(on_save=self.on_save)
+        self.date_dialog.bind(on_cancel=self.on_cancel)
         self.date_dialog.open()
 
     def on_save(self, instance, value, date_range):
         self.date = value.strftime("%Y-%m-%d")
+        self.date_dialog.unbind(on_save=self.on_save)
+        self.date_dialog.unbind(on_cancel=self.on_cancel)
+
+    def on_cancel(self, instance, value):
+        self.date_dialog.unbind(on_save=self.on_save)
+        self.date_dialog.unbind(on_cancel=self.on_cancel)
