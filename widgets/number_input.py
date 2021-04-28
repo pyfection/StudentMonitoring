@@ -11,6 +11,13 @@ class NumberInput(MDTextField):
         self.helper_text = f"Needs to be between {self.min_text_length} and {self.max_text_length} numbers long"
         super().__init__(**kwargs)
 
+    def insert_text(self, substring, from_undo=False):
+        try:
+            int(substring)
+        except ValueError:
+            return
+        return super().insert_text(substring, from_undo=from_undo)
+
     def on_min_text_length(self, *args):
         self.helper_text = f"Needs to be between {self.min_text_length} and {self.max_text_length} numbers long"
 
